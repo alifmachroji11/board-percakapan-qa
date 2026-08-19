@@ -26,6 +26,28 @@ export const WEEKLY_QUESTIONS = [
     question:
       'Apa satu hal kecil yang aku lakukan yang bikin kamu ngerasa dicintai, yang mungkin belum pernah aku tahu?',
   },
+  {
+    week: 6,
+    question:
+      'Kalau kita capek sama rutinitas, apa yang biasanya bikin kita berdua ngerasa "connect" lagi?',
+  },
+  {
+    week: 7,
+    question:
+      'Ada nggak kebiasaan soal uang dari keluarga masing-masing yang bikin kita beda pandangan?',
+  },
+  {
+    week: 8,
+    question: 'Gimana perasaanmu soal cara kita berdua nyelesain konflik selama ini?',
+  },
+  {
+    week: 9,
+    question: 'Apa yang kamu takutin soal masa depan kita, yang belum pernah kamu omongin?',
+  },
+  {
+    week: 10,
+    question: 'Kalau salah satu dari kita sakit parah suatu hari, gimana kita mau saling jagain?',
+  },
 ]
 
 export function getWeeklyQuestion(week) {

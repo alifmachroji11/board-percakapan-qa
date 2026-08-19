@@ -16,7 +16,7 @@ export default function AppLayout() {
     <div className="min-h-dvh flex flex-col bg-cream">
       <header className="sticky top-0 z-20 border-b border-cream-deep/70 bg-cream/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3">
-          <NavLink to="/app" className="text-lg font-extrabold tracking-tight text-terracotta-deep">
+          <NavLink to="/" className="text-lg font-extrabold tracking-tight text-terracotta-deep">
             Obrolin
           </NavLink>
           <nav className="flex items-center gap-1">
