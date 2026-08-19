@@ -10,6 +10,7 @@
 
   --color-cream: #fbf6ee;
   --color-cream-deep: #f3e9d8;
+  --color-surface: #ffffff;
   --color-terracotta: #c96f4a;
   --color-terracotta-deep: #a8563a;
   --color-sage: #8ea38a;
@@ -24,6 +25,29 @@
   --color-ink-soft: #6b6259;
 }
 
+/*
+  Dark mode: tetap "hangat", bukan abu-abu/biru dingin generik — cuma
+  varian gelap dari palet yang sama. Diaktifkan via class .dark di <html>
+  (lihat src/lib/theme.js), default tetap light mode.
+*/
+:root.dark {
+  --color-cream: #1e1812;
+  --color-cream-deep: #2a2118;
+  --color-surface: #332920;
+  --color-terracotta: #e08a5f;
+  --color-terracotta-deep: #f0a97e;
+  --color-sage: #a3b89e;
+  --color-sage-deep: #c3d4bf;
+  --color-dusty-pink: #e7b6ae;
+  --color-dusty-pink-deep: #f0c9c2;
+  --color-soft-blue: #9db8c9;
+  --color-soft-blue-deep: #bcd3e0;
+  --color-mustard: #e0b563;
+  --color-mustard-deep: #f0cd8f;
+  --color-ink: #f2e9dc;
+  --color-ink-soft: #b9ac9b;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -33,6 +57,7 @@ body {
   background-color: var(--color-cream);
   color: var(--color-ink);
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* scrollbar tipis untuk horizontal snap-scroll kartu topik */

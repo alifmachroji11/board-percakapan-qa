@@ -67,7 +67,7 @@ export default function JurnalTopik() {
             onChange={(e) => setDraft(e.target.value)}
             placeholder="Tulis jawabanmu di sini. Cuma kamu yang bisa lihat, sampai kalian berdua siap buka bareng."
             rows={8}
-            className="w-full resize-none rounded-2xl bg-white p-4 text-sm leading-relaxed text-ink shadow-sm shadow-ink/5 outline-none ring-terracotta/30 placeholder:text-ink-soft/60 focus:ring-2"
+            className="w-full resize-none rounded-2xl bg-surface p-4 text-sm leading-relaxed text-ink shadow-sm shadow-ink/5 outline-none ring-terracotta/30 placeholder:text-ink-soft/60 focus:ring-2"
           />
           <div className="flex items-center gap-2 rounded-xl bg-cream-deep px-4 py-3 text-xs text-ink-soft">
             <Lock size={14} />
@@ -79,7 +79,7 @@ export default function JurnalTopik() {
         </>
       ) : (
         <div className="flex flex-col gap-5">
-          <div className="rounded-2xl bg-white p-4 shadow-sm shadow-ink/5">
+          <div className="rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5">
             <p className="text-xs font-bold uppercase tracking-wide text-sage-deep">Jawabanmu tersimpan</p>
             <p className="mt-2 text-sm leading-relaxed text-ink">{entry.myAnswer}</p>
           </div>

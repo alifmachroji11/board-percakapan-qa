@@ -26,7 +26,7 @@ export default function PilihFase() {
             className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
               phase === p.id
                 ? 'bg-terracotta text-white shadow-sm'
-                : 'bg-white text-ink-soft hover:bg-cream-deep'
+                : 'bg-surface text-ink-soft hover:bg-cream-deep'
             }`}
           >
             {p.label}
@@ -42,7 +42,7 @@ export default function PilihFase() {
             <button
               key={topic.id}
               onClick={() => navigate(`/app/topik/${topic.id}`)}
-              className="flex flex-col items-start gap-3 rounded-t-xl rounded-b-lg bg-white p-4 text-left shadow-sm shadow-ink/5 transition-transform active:scale-[0.97]"
+              className="flex flex-col items-start gap-3 rounded-t-xl rounded-b-lg bg-surface p-4 text-left shadow-sm shadow-ink/5 transition-transform active:scale-[0.97]"
             >
               <span className="rounded-full bg-dusty-pink/25 px-2.5 py-1 text-[11px] font-bold text-terracotta-deep">
                 {topic.category}

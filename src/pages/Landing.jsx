@@ -17,6 +17,7 @@ import { TOPICS } from '../data/topics.js'
 import { WEEKLY_QUESTIONS } from '../data/weeklyQuestions.js'
 import PillButton from '../components/PillButton.jsx'
 import { LogoLockup } from '../components/Logo.jsx'
+import ThemeToggle from '../components/ThemeToggle.jsx'
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -70,8 +71,9 @@ export default function Landing() {
 
   return (
     <div className="flex flex-col bg-cream text-ink">
-      <div className="mx-auto w-full max-w-3xl px-5 pt-6">
+      <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-5 pt-6">
         <LogoLockup iconSize={22} textClassName="text-base" />
+        <ThemeToggle />
       </div>
 
       {/* ============ HERO ============ */}
@@ -149,7 +151,7 @@ export default function Landing() {
           {previewTopics.map((topic) => (
             <div
               key={topic.id}
-              className="flex flex-col gap-2 rounded-t-xl rounded-b-lg bg-white p-4 shadow-sm shadow-ink/5"
+              className="flex flex-col gap-2 rounded-t-xl rounded-b-lg bg-surface p-4 shadow-sm shadow-ink/5"
             >
               <span className="w-fit rounded-full bg-dusty-pink/25 px-2.5 py-1 text-[11px] font-bold text-terracotta-deep">
                 {topic.category}
@@ -228,7 +230,7 @@ export default function Landing() {
         <h2 className="text-center text-2xl font-extrabold">Contoh pertanyaan mingguan</h2>
         <div className="mt-8 flex flex-col gap-3">
           {previewQuestions.map((q) => (
-            <div key={q.week} className="flex items-start gap-3 rounded-2xl bg-white p-4 shadow-sm shadow-ink/5">
+            <div key={q.week} className="flex items-start gap-3 rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5">
               <Mail size={18} className="mt-0.5 shrink-0 text-soft-blue-deep" />
               <p className="text-sm leading-relaxed text-ink">{q.question}</p>
             </div>
@@ -261,7 +263,7 @@ export default function Landing() {
         <h2 className="text-center text-2xl font-extrabold">Kata mereka yang udah coba</h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="rounded-2xl bg-white p-5 shadow-sm shadow-ink/5">
+            <div key={t.name} className="rounded-2xl bg-surface p-5 shadow-sm shadow-ink/5">
               <Quote size={20} className="text-dusty-pink-deep" />
               <p className="mt-2 text-sm italic leading-relaxed text-ink">{t.quote}</p>
               <p className="mt-3 text-xs font-semibold text-ink-soft">— {t.name}</p>
@@ -275,7 +277,7 @@ export default function Landing() {
         <h2 className="text-center text-2xl font-extrabold">Pertanyaan yang sering ditanya</h2>
         <div className="mt-8 flex flex-col gap-2">
           {FAQ.map((item, i) => (
-            <div key={item.q} className="overflow-hidden rounded-2xl bg-white shadow-sm shadow-ink/5">
+            <div key={item.q} className="overflow-hidden rounded-2xl bg-surface shadow-sm shadow-ink/5">
               <button
                 onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
                 className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"

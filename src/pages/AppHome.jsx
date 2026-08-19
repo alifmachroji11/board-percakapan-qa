@@ -14,7 +14,7 @@ export default function AppHome() {
 
       <Link
         to="/app/topik"
-        className="group flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm shadow-ink/5 transition-transform active:scale-[0.98]"
+        className="group flex items-center gap-4 rounded-2xl bg-surface p-5 shadow-sm shadow-ink/5 transition-transform active:scale-[0.98]"
       >
         <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-terracotta/15 text-terracotta-deep">
           <MessageCircleHeart size={22} strokeWidth={2} />
@@ -28,7 +28,7 @@ export default function AppHome() {
 
       <Link
         to="/app/kotak-waktu"
-        className="group flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm shadow-ink/5 transition-transform active:scale-[0.98]"
+        className="group flex items-center gap-4 rounded-2xl bg-surface p-5 shadow-sm shadow-ink/5 transition-transform active:scale-[0.98]"
       >
         <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-soft-blue/20 text-soft-blue-deep">
           <Clock size={22} strokeWidth={2} />

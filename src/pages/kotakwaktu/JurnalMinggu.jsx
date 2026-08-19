@@ -57,7 +57,7 @@ export default function JurnalMinggu() {
             onChange={(e) => setDraft(e.target.value)}
             placeholder="Jawab jujur dulu — jawaban pasanganmu tersembunyi sampai kalian berdua siap buka bareng."
             rows={8}
-            className="w-full resize-none rounded-2xl bg-white p-4 text-sm leading-relaxed text-ink shadow-sm shadow-ink/5 outline-none ring-soft-blue/40 placeholder:text-ink-soft/60 focus:ring-2"
+            className="w-full resize-none rounded-2xl bg-surface p-4 text-sm leading-relaxed text-ink shadow-sm shadow-ink/5 outline-none ring-soft-blue/40 placeholder:text-ink-soft/60 focus:ring-2"
           />
           <PillButton variant="blue" onClick={handleSubmit} disabled={!draft.trim()} className="w-full">
             Kirim jawabanku
@@ -65,7 +65,7 @@ export default function JurnalMinggu() {
         </>
       ) : (
         <div className="flex flex-col gap-5">
-          <div className="rounded-2xl bg-white p-4 shadow-sm shadow-ink/5">
+          <div className="rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5">
             <p className="text-xs font-bold uppercase tracking-wide text-sage-deep">Jawabanmu tersimpan</p>
             <p className="mt-2 text-sm leading-relaxed text-ink">{entry.myAnswer}</p>
           </div>

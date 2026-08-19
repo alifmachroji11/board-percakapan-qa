@@ -82,7 +82,7 @@ export default function DetailTopik() {
           href={topic.articleUrl}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm shadow-ink/5 transition-colors hover:bg-cream-deep"
+          className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5 transition-colors hover:bg-cream-deep"
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-soft-blue/15 text-soft-blue-deep">
             <BookOpen size={18} />

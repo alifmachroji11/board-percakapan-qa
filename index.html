@@ -15,6 +15,13 @@
       rel="stylesheet"
     />
     <title>Obrolin — mulai obrolan yang selama ini kalian hindari</title>
+    <script>
+      // Terapkan tema sebelum CSS ke-paint, biar nggak ada kedipan warna salah.
+      // Default tetap light — class 'dark' cuma nambah kalau user pernah pilih dark.
+      if (localStorage.getItem('obrolin_theme') === 'dark') {
+        document.documentElement.classList.add('dark')
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

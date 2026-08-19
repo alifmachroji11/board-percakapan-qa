@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion'
 import { MessageCircleHeart, Clock, History } from 'lucide-react'
 import PageTransition from '../components/PageTransition.jsx'
 import SplashScreen from '../components/SplashScreen.jsx'
+import ThemeToggle from '../components/ThemeToggle.jsx'
 import { LogoIcon } from '../components/Logo.jsx'
 
 const TABS = [
@@ -28,24 +29,27 @@ export default function AppLayout() {
             <LogoIcon size={22} className="text-terracotta" />
             Obrolin
           </button>
-          <nav className="flex items-center gap-1">
-            {TABS.map(({ to, label, icon: Icon }) => (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) =>
-                  `flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold transition-colors sm:text-sm ${
-                    isActive
-                      ? 'bg-terracotta text-white shadow-sm'
-                      : 'text-ink-soft hover:bg-cream-deep'
-                  }`
-                }
-              >
-                <Icon size={16} strokeWidth={2} />
-                <span className="hidden sm:inline">{label}</span>
-              </NavLink>
-            ))}
-          </nav>
+          <div className="flex items-center gap-1">
+            <nav className="flex items-center gap-1">
+              {TABS.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className={({ isActive }) =>
+                    `flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold transition-colors sm:text-sm ${
+                      isActive
+                        ? 'bg-terracotta text-white shadow-sm'
+                        : 'text-ink-soft hover:bg-cream-deep'
+                    }`
+                  }
+                >
+                  <Icon size={16} strokeWidth={2} />
+                  <span className="hidden sm:inline">{label}</span>
+                </NavLink>
+              ))}
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

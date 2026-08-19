@@ -32,7 +32,7 @@ export default function Riwayat() {
               <Link
                 key={topic.id}
                 to={href}
-                className="flex items-center justify-between gap-3 rounded-xl bg-white p-4 shadow-sm shadow-ink/5"
+                className="flex items-center justify-between gap-3 rounded-xl bg-surface p-4 shadow-sm shadow-ink/5"
               >
                 <p className="text-sm font-semibold leading-snug text-ink">{topic.title}</p>
                 <StatusBadge status={status} />
@@ -61,7 +61,7 @@ export default function Riwayat() {
               <Link
                 key={q.week}
                 to={href}
-                className="flex items-center justify-between gap-3 rounded-xl bg-white p-4 shadow-sm shadow-ink/5"
+                className="flex items-center justify-between gap-3 rounded-xl bg-surface p-4 shadow-sm shadow-ink/5"
               >
                 <div>
                   <p className="text-xs font-semibold text-soft-blue-deep">Minggu ke-{q.week}</p>
