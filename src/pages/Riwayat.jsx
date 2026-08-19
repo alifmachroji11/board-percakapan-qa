@@ -1,11 +1,36 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TOPICS } from '../data/topics.js'
 import { WEEKLY_QUESTIONS } from '../data/weeklyQuestions.js'
-import { getEntry, getEntryStatus, getCurrentWeek, topikEntryId, mingguEntryId } from '../lib/storage.js'
+import { getAllEntries, groupEntryPairs, deriveStatus, pairKey } from '../lib/journal.js'
+import { supabase } from '../lib/supabaseClient.js'
+import { useCouple } from '../context/CoupleContext.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
 
 export default function Riwayat() {
-  const currentWeek = getCurrentWeek()
+  const { couple } = useCouple()
+  const currentWeek = couple.current_week
+  const [pairs, setPairs] = useState(new Map())
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const entries = await getAllEntries(couple.id)
+      if (cancelled) return
+      setPairs(groupEntryPairs(entries, user.id))
+      setLoading(false)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [couple.id])
+
+  if (loading) return null
 
   return (
     <div className="flex flex-col gap-8">
@@ -18,16 +43,13 @@ export default function Riwayat() {
         <h2 className="text-sm font-bold uppercase tracking-wide text-terracotta-deep">Kartu Topik</h2>
         <div className="flex flex-col gap-2">
           {TOPICS.map((topic) => {
-            const entry = getEntry(topikEntryId(topic.id))
-            const status = getEntryStatus(entry)
+            const status = deriveStatus(pairs.get(pairKey('topik', topic.id)))
             const href =
               status === 'belum-dibahas'
                 ? `/app/topik/${topic.id}`
-                : status === 'siap-dibuka'
+                : status === 'siap-dibuka' || status === 'sudah-dibuka'
                   ? `/app/topik/${topic.id}/buka-bareng`
-                  : status === 'sudah-dibuka'
-                    ? `/app/topik/${topic.id}/buka-bareng`
-                    : `/app/topik/${topic.id}/jurnal`
+                  : `/app/topik/${topic.id}/jurnal`
             return (
               <Link
                 key={topic.id}
@@ -46,21 +68,12 @@ export default function Riwayat() {
         <h2 className="text-sm font-bold uppercase tracking-wide text-soft-blue-deep">Kotak Waktu</h2>
         <div className="flex flex-col gap-2">
           {WEEKLY_QUESTIONS.filter((q) => q.week <= currentWeek).map((q) => {
-            const entry = getEntry(mingguEntryId(q.week))
             const isPastWeek = q.week < currentWeek
-            const status = getEntryStatus(entry, { isPastWeek })
-            const href =
-              status === 'sudah-dibuka'
-                ? '/app/kotak-waktu/buka-bareng'
-                : status === 'siap-dibuka'
-                  ? '/app/kotak-waktu/buka-bareng'
-                  : q.week === currentWeek
-                    ? '/app/kotak-waktu'
-                    : '/app/kotak-waktu'
+            const status = deriveStatus(pairs.get(pairKey('kotak-waktu', q.week)), { isPastWeek })
             return (
               <Link
                 key={q.week}
-                to={href}
+                to="/app/kotak-waktu"
                 className="flex items-center justify-between gap-3 rounded-xl bg-surface p-4 shadow-sm shadow-ink/5"
               >
                 <div>

@@ -1,25 +1,47 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Mail, Lock, FastForward } from 'lucide-react'
 import { WEEKLY_QUESTIONS, getWeeklyQuestion } from '../../data/weeklyQuestions.js'
-import { PARTNER_NAME } from '../../data/dummyPartner.js'
-import { getEntry, getEntryStatus, getCurrentWeek, advanceWeek, mingguEntryId } from '../../lib/storage.js'
+import { getEntryPair, deriveStatus, advanceWeek, subscribeToCoupleJournal } from '../../lib/journal.js'
+import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
 import StatusBadge from '../../components/StatusBadge.jsx'
 import DemoPanel from '../../components/DemoPanel.jsx'
 
 export default function PertanyaanMinggu() {
   const navigate = useNavigate()
-  const [week, setWeek] = useState(() => getCurrentWeek())
+  const { couple, partner, refresh } = useCouple()
+  const partnerName = partner?.display_name || 'pasanganmu'
+  const week = couple.current_week
   const question = getWeeklyQuestion(week)
-  const entryId = mingguEntryId(week)
-  const entry = getEntry(entryId)
-  const status = getEntryStatus(entry)
   const isLastWeek = week >= WEEKLY_QUESTIONS.length
 
-  function handleAdvanceWeek() {
-    const newWeek = advanceWeek()
-    setWeek(newWeek)
+  const [loading, setLoading] = useState(true)
+  const [pair, setPair] = useState({ mine: null, partner: null })
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      const result = await getEntryPair(couple.id, 'kotak-waktu', week)
+      if (cancelled) return
+      setPair(result)
+      setLoading(false)
+    }
+    load()
+    const unsubscribe = subscribeToCoupleJournal(couple.id, load)
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
+  }, [couple.id, week])
+
+  if (loading) return null
+
+  const status = deriveStatus(pair)
+
+  async function handleAdvanceWeek() {
+    await advanceWeek(couple.id, WEEKLY_QUESTIONS.length)
+    await refresh()
   }
 
   return (
@@ -43,7 +65,7 @@ export default function PertanyaanMinggu() {
               status === 'belum-dibahas'
                 ? 'Kamu belum jawab'
                 : status === 'menunggu-pasangan'
-                  ? `Menunggu ${PARTNER_NAME} jawab`
+                  ? `Menunggu ${partnerName} jawab`
                   : status === 'siap-dibuka'
                     ? 'Kalian berdua sudah jawab, siap dibuka'
                     : undefined
@@ -61,7 +83,7 @@ export default function PertanyaanMinggu() {
       {status === 'menunggu-pasangan' && (
         <div className="flex items-center gap-3 rounded-2xl bg-cream-deep p-4 text-sm text-ink-soft">
           <Lock size={16} className="shrink-0" />
-          Jawabanmu tersimpan. Menunggu {PARTNER_NAME} jawab sebelum kalian bisa buka bareng.
+          Jawabanmu tersimpan. Menunggu {partnerName} jawab sebelum kalian bisa buka bareng.
         </div>
       )}
 
@@ -83,7 +105,8 @@ export default function PertanyaanMinggu() {
 
       <DemoPanel>
         <p className="text-xs text-ink-soft">
-          Lompat waktu supaya kamu bisa coba siklus mingguan tanpa nunggu seminggu sungguhan.
+          Lompat waktu supaya kamu bisa coba siklus mingguan tanpa nunggu seminggu sungguhan. Ini
+          bakal ngelompatin minggu buat kalian berdua (tersimpan di database couple ini).
         </p>
         <PillButton
           variant="soft"

@@ -3,28 +3,45 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Heart, ArrowLeft } from 'lucide-react'
 import { getTopicById } from '../../data/topics.js'
-import { PARTNER_NAME } from '../../data/dummyPartner.js'
-import { getEntry, markOpened, topikEntryId } from '../../lib/storage.js'
+import { getEntryPair, markOpened } from '../../lib/journal.js'
+import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
 
 export default function BukaBarengTopik() {
   const { topicId } = useParams()
   const navigate = useNavigate()
+  const { couple, partner } = useCouple()
   const topic = getTopicById(topicId)
-  const entryId = topikEntryId(topicId)
-  const [entry] = useState(() => getEntry(entryId))
+  const partnerName = partner?.display_name || 'pasanganmu'
+
+  const [loading, setLoading] = useState(true)
+  const [pair, setPair] = useState({ mine: null, partner: null })
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
-    if (!entry?.myAnswer || !entry?.partnerAnswer) return
+    let cancelled = false
+    getEntryPair(couple.id, 'topik', topicId).then((result) => {
+      if (cancelled) return
+      setPair(result)
+      setLoading(false)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [couple.id, topicId])
+
+  useEffect(() => {
+    if (!pair.mine || !pair.partner) return
     const timer = setTimeout(() => {
       setRevealed(true)
-      markOpened(entryId)
+      markOpened(couple.id, 'topik', topicId)
     }, 1100)
     return () => clearTimeout(timer)
-  }, [entry, entryId])
+  }, [pair, couple.id, topicId])
 
-  if (!topic || !entry?.myAnswer || !entry?.partnerAnswer) {
+  if (loading) return null
+
+  if (!topic || !pair.mine || !pair.partner) {
     return (
       <div className="text-center text-ink-soft">
         Belum ada jawaban lengkap untuk dibuka.{' '}
@@ -74,7 +91,7 @@ export default function BukaBarengTopik() {
             className="flex-1 rounded-2xl bg-terracotta/10 p-5"
           >
             <p className="text-xs font-bold uppercase tracking-wide text-terracotta-deep">Jawabanmu</p>
-            <p className="mt-2 text-sm leading-relaxed text-ink">{entry.myAnswer}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink">{pair.mine.answer}</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 16 }}
@@ -83,9 +100,9 @@ export default function BukaBarengTopik() {
             className="flex-1 rounded-2xl bg-soft-blue/15 p-5"
           >
             <p className="text-xs font-bold uppercase tracking-wide text-soft-blue-deep">
-              Jawaban {PARTNER_NAME}
+              Jawaban {partnerName}
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-ink">{entry.partnerAnswer}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink">{pair.partner.answer}</p>
           </motion.div>
         </div>
       )}

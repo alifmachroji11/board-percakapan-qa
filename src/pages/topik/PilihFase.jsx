@@ -1,13 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PHASES, getTopicsByPhase } from '../../data/topics.js'
-import { getEntry, getEntryStatus, topikEntryId } from '../../lib/storage.js'
+import { getAllEntries, groupEntryPairs, deriveStatus, pairKey } from '../../lib/journal.js'
+import { supabase } from '../../lib/supabaseClient.js'
+import { useCouple } from '../../context/CoupleContext.jsx'
 import StatusBadge from '../../components/StatusBadge.jsx'
 
 export default function PilihFase() {
+  const { couple } = useCouple()
   const [phase, setPhase] = useState(PHASES[0].id)
+  const [pairs, setPairs] = useState(new Map())
   const navigate = useNavigate()
   const topics = getTopicsByPhase(phase)
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const entries = await getAllEntries(couple.id)
+      if (!cancelled) setPairs(groupEntryPairs(entries, user.id))
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [couple.id])
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,8 +55,7 @@ export default function PilihFase() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {topics.map((topic) => {
-          const entry = getEntry(topikEntryId(topic.id))
-          const status = getEntryStatus(entry)
+          const status = deriveStatus(pairs.get(pairKey('topik', topic.id)))
           return (
             <button
               key={topic.id}

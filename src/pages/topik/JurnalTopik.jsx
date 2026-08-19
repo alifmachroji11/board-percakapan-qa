@@ -1,24 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { ArrowLeft, Lock, Sparkles } from 'lucide-react'
 import { getTopicById } from '../../data/topics.js'
-import { PARTNER_NAME } from '../../data/dummyPartner.js'
-import {
-  getEntry,
-  submitMyAnswer,
-  simulatePartnerSubmit,
-  topikEntryId,
-} from '../../lib/storage.js'
+import { getEntryPair, submitAnswer, subscribeToCoupleJournal } from '../../lib/journal.js'
+import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
-import DemoPanel from '../../components/DemoPanel.jsx'
 
 export default function JurnalTopik() {
   const { topicId } = useParams()
   const navigate = useNavigate()
+  const { couple, partner } = useCouple()
   const topic = getTopicById(topicId)
-  const entryId = topikEntryId(topicId)
-  const [entry, setEntry] = useState(() => getEntry(entryId))
-  const [draft, setDraft] = useState(entry?.myAnswer ?? '')
+  const partnerName = partner?.display_name || 'pasanganmu'
+
+  const [loading, setLoading] = useState(true)
+  const [pair, setPair] = useState({ mine: null, partner: null })
+  const [draft, setDraft] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      const result = await getEntryPair(couple.id, 'topik', topicId)
+      if (cancelled) return
+      setPair(result)
+      setDraft(result.mine?.answer ?? '')
+      setLoading(false)
+    }
+    load()
+    const unsubscribe = subscribeToCoupleJournal(couple.id, load)
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
+  }, [couple.id, topicId])
 
   if (!topic) {
     return (
@@ -31,19 +46,19 @@ export default function JurnalTopik() {
     )
   }
 
-  const hasSubmitted = Boolean(entry?.myAnswer)
-  const partnerSubmitted = Boolean(entry?.partnerAnswer)
+  if (loading) return null
+
+  const hasSubmitted = Boolean(pair.mine)
+  const partnerSubmitted = Boolean(pair.partner)
   const bothReady = hasSubmitted && partnerSubmitted
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!draft.trim()) return
-    const updated = submitMyAnswer(entryId, 'topik', topicId, draft.trim())
-    setEntry(updated)
-  }
-
-  function handleSimulatePartner() {
-    const updated = simulatePartnerSubmit(entryId, 'topik', topicId)
-    setEntry(updated)
+    setSubmitting(true)
+    await submitAnswer(couple.id, 'topik', topicId, draft.trim())
+    const result = await getEntryPair(couple.id, 'topik', topicId)
+    setPair(result)
+    setSubmitting(false)
   }
 
   return (
@@ -73,37 +88,25 @@ export default function JurnalTopik() {
             <Lock size={14} />
             Jawaban ini terkunci sampai kalian berdua submit.
           </div>
-          <PillButton onClick={handleSubmit} disabled={!draft.trim()} className="w-full">
-            Kirim jawabanku
+          <PillButton onClick={handleSubmit} disabled={!draft.trim() || submitting} className="w-full">
+            {submitting ? 'Menyimpan...' : 'Kirim jawabanku'}
           </PillButton>
         </>
       ) : (
         <div className="flex flex-col gap-5">
           <div className="rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5">
             <p className="text-xs font-bold uppercase tracking-wide text-sage-deep">Jawabanmu tersimpan</p>
-            <p className="mt-2 text-sm leading-relaxed text-ink">{entry.myAnswer}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink">{pair.mine.answer}</p>
           </div>
 
           <div className="flex items-center gap-3 rounded-2xl bg-soft-blue/15 p-4">
             <Lock size={18} className="shrink-0 text-soft-blue-deep" />
             <p className="text-sm text-ink">
               {partnerSubmitted
-                ? `${PARTNER_NAME} juga sudah jawab. Siap dibuka bareng!`
-                : `Menunggu jawaban ${PARTNER_NAME}. Jawaban kalian berdua tetap terkunci sampai lengkap.`}
+                ? `${partnerName} juga sudah jawab. Siap dibuka bareng!`
+                : `Menunggu jawaban ${partnerName}. Jawaban kalian berdua tetap terkunci sampai lengkap.`}
             </p>
           </div>
-
-          {!partnerSubmitted && (
-            <DemoPanel>
-              <p className="text-xs text-ink-soft">
-                Simulasikan pasangan (dummy: "{PARTNER_NAME}") supaya kamu bisa coba lanjutan alurnya
-                sendirian.
-              </p>
-              <PillButton variant="soft" onClick={handleSimulatePartner} className="w-fit">
-                Simulasi: {PARTNER_NAME} sudah menjawab
-              </PillButton>
-            </DemoPanel>
-          )}
 
           {bothReady && (
             <PillButton

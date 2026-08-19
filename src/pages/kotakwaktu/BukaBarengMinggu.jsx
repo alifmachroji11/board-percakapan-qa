@@ -1,21 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Mail, MailOpen } from 'lucide-react'
 import { getWeeklyQuestion } from '../../data/weeklyQuestions.js'
-import { PARTNER_NAME } from '../../data/dummyPartner.js'
-import { getEntry, markOpened, getCurrentWeek, mingguEntryId } from '../../lib/storage.js'
+import { getEntryPair, markOpened } from '../../lib/journal.js'
+import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
 
 export default function BukaBarengMinggu() {
   const navigate = useNavigate()
-  const week = getCurrentWeek()
+  const { couple, partner } = useCouple()
+  const partnerName = partner?.display_name || 'pasanganmu'
+  const week = couple.current_week
   const question = getWeeklyQuestion(week)
-  const entryId = mingguEntryId(week)
-  const [entry] = useState(() => getEntry(entryId))
+
+  const [loading, setLoading] = useState(true)
+  const [pair, setPair] = useState({ mine: null, partner: null })
   const [step, setStep] = useState('closed') // closed -> opening -> open
 
-  if (!entry?.myAnswer || !entry?.partnerAnswer) {
+  useEffect(() => {
+    let cancelled = false
+    getEntryPair(couple.id, 'kotak-waktu', week).then((result) => {
+      if (cancelled) return
+      setPair(result)
+      setLoading(false)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [couple.id, week])
+
+  if (loading) return null
+
+  if (!pair.mine || !pair.partner) {
     return (
       <div className="text-center text-ink-soft">
         Belum ada jawaban lengkap untuk dibuka minggu ini.{' '}
@@ -30,7 +47,7 @@ export default function BukaBarengMinggu() {
     setStep('opening')
     setTimeout(() => {
       setStep('open')
-      markOpened(entryId)
+      markOpened(couple.id, 'kotak-waktu', week)
     }, 1000)
   }
 
@@ -87,7 +104,7 @@ export default function BukaBarengMinggu() {
             className="flex-1 rounded-2xl bg-soft-blue/15 p-5"
           >
             <p className="text-xs font-bold uppercase tracking-wide text-soft-blue-deep">Jawabanmu</p>
-            <p className="mt-2 text-sm leading-relaxed text-ink">{entry.myAnswer}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink">{pair.mine.answer}</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -96,9 +113,9 @@ export default function BukaBarengMinggu() {
             className="flex-1 rounded-2xl bg-mustard/15 p-5"
           >
             <p className="text-xs font-bold uppercase tracking-wide text-mustard-deep">
-              Jawaban {PARTNER_NAME}
+              Jawaban {partnerName}
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-ink">{entry.partnerAnswer}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink">{pair.partner.answer}</p>
           </motion.div>
         </div>
       )}
