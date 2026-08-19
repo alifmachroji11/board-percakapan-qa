@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/*
+  Palet gabungan Obrolin (terracotta, krem, sage, dusty pink)
+  + Kotak Waktu (soft blue, mustard). Dipakai bareng supaya dua
+  konsep terasa satu keluarga produk, bukan dua app terpisah.
+*/
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-cream: #fbf6ee;
+  --color-cream-deep: #f3e9d8;
+  --color-terracotta: #c96f4a;
+  --color-terracotta-deep: #a8563a;
+  --color-sage: #8ea38a;
+  --color-sage-deep: #6d8468;
+  --color-dusty-pink: #e7b6ae;
+  --color-dusty-pink-deep: #d3948a;
+  --color-soft-blue: #9db8c9;
+  --color-soft-blue-deep: #7a9db2;
+  --color-mustard: #d9a441;
+  --color-mustard-deep: #b9852a;
+  --color-ink: #3a332c;
+  --color-ink-soft: #6b6259;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* scrollbar tipis untuk horizontal snap-scroll kartu topik */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-dusty-pink);
+  border-radius: 999px;
+}
