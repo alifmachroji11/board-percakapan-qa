@@ -16,6 +16,7 @@ import {
 import { TOPICS } from '../data/topics.js'
 import { WEEKLY_QUESTIONS } from '../data/weeklyQuestions.js'
 import PillButton from '../components/PillButton.jsx'
+import { LogoLockup } from '../components/Logo.jsx'
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -69,8 +70,12 @@ export default function Landing() {
 
   return (
     <div className="flex flex-col bg-cream text-ink">
+      <div className="mx-auto w-full max-w-3xl px-5 pt-6">
+        <LogoLockup iconSize={22} textClassName="text-base" />
+      </div>
+
       {/* ============ HERO ============ */}
-      <section className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-5 pb-14 pt-16 text-center sm:pt-24">
+      <section className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-5 pb-14 pt-10 text-center sm:pt-16">
         <span className="flex items-center gap-1.5 rounded-full bg-dusty-pink/25 px-3 py-1 text-xs font-bold text-terracotta-deep">
           <Heart size={13} fill="currentColor" /> Untuk pasangan Indonesia
         </span>

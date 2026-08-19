@@ -1,7 +1,10 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { MessageCircleHeart, Clock, History } from 'lucide-react'
 import PageTransition from '../components/PageTransition.jsx'
+import SplashScreen from '../components/SplashScreen.jsx'
+import { LogoIcon } from '../components/Logo.jsx'
 
 const TABS = [
   { to: '/app/topik', label: 'Kartu Topik', icon: MessageCircleHeart },
@@ -11,14 +14,20 @@ const TABS = [
 
 export default function AppLayout() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const [leavingToLanding, setLeavingToLanding] = useState(false)
 
   return (
     <div className="min-h-dvh flex flex-col bg-cream">
       <header className="sticky top-0 z-20 border-b border-cream-deep/70 bg-cream/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3">
-          <NavLink to="/" className="text-lg font-extrabold tracking-tight text-terracotta-deep">
+          <button
+            onClick={() => setLeavingToLanding(true)}
+            className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-terracotta-deep"
+          >
+            <LogoIcon size={22} className="text-terracotta" />
             Obrolin
-          </NavLink>
+          </button>
           <nav className="flex items-center gap-1">
             {TABS.map(({ to, label, icon: Icon }) => (
               <NavLink
@@ -47,6 +56,11 @@ export default function AppLayout() {
           </PageTransition>
         </AnimatePresence>
       </main>
+
+      {/* Transisi logo singkat sebelum balik ke landing page */}
+      {leavingToLanding && (
+        <SplashScreen duration={650} onFinish={() => navigate('/')} />
+      )}
     </div>
   )
 }
