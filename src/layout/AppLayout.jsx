@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { MessageCircleHeart, Clock, History } from 'lucide-react'
@@ -6,6 +6,7 @@ import PageTransition from '../components/PageTransition.jsx'
 import SplashScreen from '../components/SplashScreen.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import { LogoIcon } from '../components/Logo.jsx'
+import { ensureSession, getMyCouple } from '../lib/auth.js'
 
 const TABS = [
   { to: '/app/topik', label: 'Kartu Topik', icon: MessageCircleHeart },
@@ -17,6 +18,30 @@ export default function AppLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const [leavingToLanding, setLeavingToLanding] = useState(false)
+  const [checkingPairing, setCheckingPairing] = useState(true)
+
+  // Gate: belum ada couple yang tergabung -> arahkan ke layar pairing dulu.
+  useEffect(() => {
+    let cancelled = false
+    async function check() {
+      await ensureSession()
+      const couple = await getMyCouple()
+      if (cancelled) return
+      if (!couple) {
+        navigate('/app/pairing', { replace: true })
+        return
+      }
+      setCheckingPairing(false)
+    }
+    check()
+    return () => {
+      cancelled = true
+    }
+  }, [navigate])
+
+  if (checkingPairing) {
+    return <div className="min-h-dvh bg-cream" />
+  }
 
   return (
     <div className="min-h-dvh flex flex-col bg-cream">

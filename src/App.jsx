@@ -5,6 +5,7 @@ import SplashScreen from './components/SplashScreen.jsx'
 import Landing from './pages/Landing.jsx'
 import AppLayout from './layout/AppLayout.jsx'
 import AppHome from './pages/AppHome.jsx'
+import Pairing from './pages/Pairing.jsx'
 import PilihFase from './pages/topik/PilihFase.jsx'
 import DetailTopik from './pages/topik/DetailTopik.jsx'
 import JurnalTopik from './pages/topik/JurnalTopik.jsx'
@@ -35,6 +36,8 @@ export default function App() {
       {!showSplash && (
         <Routes>
           <Route path="/" element={<Landing />} />
+
+          <Route path="/app/pairing" element={<Pairing />} />
 
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<AppHome />} />
