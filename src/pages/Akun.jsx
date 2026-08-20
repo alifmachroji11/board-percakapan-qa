@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
-import { ShieldCheck, ShieldAlert, Mail } from 'lucide-react'
-import { isAnonymousUser, getUserEmail, linkGoogleAccount } from '../lib/auth.js'
+import { useNavigate } from 'react-router-dom'
+import { ShieldCheck, ShieldAlert, Mail, LogOut } from 'lucide-react'
+import { isAnonymousUser, getUserEmail, linkGoogleAccount, signOut } from '../lib/auth.js'
 import PillButton from '../components/PillButton.jsx'
 
 export default function Akun() {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [anonymous, setAnonymous] = useState(true)
   const [email, setEmail] = useState(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [confirmingLogout, setConfirmingLogout] = useState(false)
 
   async function loadStatus() {
     setLoading(true)
@@ -33,6 +36,18 @@ export default function Akun() {
     setError('')
     try {
       await linkGoogleAccount('/app/akun')
+    } catch (err) {
+      setError(err.message)
+      setBusy(false)
+    }
+  }
+
+  async function handleLogout() {
+    setBusy(true)
+    setError('')
+    try {
+      await signOut()
+      navigate('/', { replace: true })
     } catch (err) {
       setError(err.message)
       setBusy(false)
@@ -101,6 +116,37 @@ export default function Akun() {
           )}
         </div>
       )}
+
+      <div className="flex flex-col gap-3 rounded-2xl bg-surface p-5 shadow-sm shadow-ink/5">
+        {!confirmingLogout ? (
+          <button
+            onClick={() => setConfirmingLogout(true)}
+            className="flex items-center justify-center gap-2 rounded-full border border-cream-deep px-6 py-3 text-sm font-semibold text-ink-soft transition-colors hover:border-terracotta/40 hover:text-terracotta-deep"
+          >
+            <LogOut size={16} /> Keluar dari sesi ini
+          </button>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <p className="text-center text-sm text-ink-soft">
+              {anonymous
+                ? 'Sesi ini belum diamankan ke Google — kalau keluar sekarang, akses ke pasangan & jurnal kalian bisa hilang total dan nggak bisa dipulihkan. Yakin mau keluar?'
+                : 'Kamu bisa masuk lagi kapan aja pakai akun Google ini. Yakin mau keluar sekarang?'}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmingLogout(false)}
+                disabled={busy}
+                className="flex-1 rounded-full border border-cream-deep px-6 py-3 text-sm font-semibold text-ink-soft hover:border-terracotta/40"
+              >
+                Batal
+              </button>
+              <PillButton onClick={handleLogout} disabled={busy} className="flex-1">
+                {busy ? 'Keluar...' : 'Ya, tetap keluar'}
+              </PillButton>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

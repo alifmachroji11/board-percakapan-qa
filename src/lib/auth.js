@@ -53,6 +53,11 @@ export async function signInWithGoogle(redirectPath = '/app') {
   if (error) throw error
 }
 
+export async function signOut() {
+  const { error } = await supabase.auth.signOut()
+  if (error) throw error
+}
+
 export async function getMyCouple() {
   const {
     data: { user },

@@ -73,7 +73,12 @@ export default function Landing() {
     <div className="flex flex-col bg-cream text-ink">
       <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-5 pt-6">
         <LogoLockup iconSize={22} textClassName="text-base" />
-        <ThemeToggle />
+        <div className="flex items-center gap-3">
+          <Link to="/app/pairing" className="text-sm font-semibold text-ink-soft hover:text-ink">
+            Masuk
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* ============ HERO ============ */}
