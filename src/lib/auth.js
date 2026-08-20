@@ -1,8 +1,9 @@
 import { supabase } from './supabaseClient.js'
 
-// Anonymous sign-in: user langsung bisa pakai app tanpa akun/nomor HP dulu.
-// Nanti nomor HP+OTP bisa ditambahkan sebagai upgrade dari sesi anonim ini
-// (supabase.auth.updateUser / linkIdentity), bukan ganti fondasi dari awal.
+// Anonymous sign-in: user langsung bisa pakai app tanpa akun dulu. Google
+// bisa dihubungkan belakangan sebagai upgrade dari sesi anonim ini lewat
+// linkGoogleAccount() di bawah — user id tetap sama, jadi couple & jurnal
+// yang udah ada nggak hilang.
 export async function ensureSession() {
   const {
     data: { session },
@@ -12,6 +13,44 @@ export async function ensureSession() {
   const { data, error } = await supabase.auth.signInAnonymously()
   if (error) throw error
   return data.session
+}
+
+// Sesi anonim yang belum "diamankan" ke Google — kalau localStorage device ini
+// hilang/reset, akses ke couple ikut hilang karena nggak ada identitas lain
+// yang bisa dipakai buat masuk ulang.
+export async function isAnonymousUser() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  return user?.is_anonymous ?? false
+}
+
+export async function getUserEmail() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  return user?.email ?? null
+}
+
+// Buat user yang lagi login anonim (udah pairing, punya jurnal) dan mau
+// "mengamankan" akunnya biar bisa dipakai dari device lain juga — identitas
+// (user id) tetap sama, jadi couple & jawaban yang udah ada nggak hilang.
+export async function linkGoogleAccount(redirectPath = '/app/akun') {
+  const { error } = await supabase.auth.linkIdentity({
+    provider: 'google',
+    options: { redirectTo: `${window.location.origin}${redirectPath}` },
+  })
+  if (error) throw error
+}
+
+// Buat user yang udah pernah hubungkan Google sebelumnya (di device lain)
+// dan sekarang mau masuk lagi dari device baru tanpa pairing ulang.
+export async function signInWithGoogle(redirectPath = '/app') {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: `${window.location.origin}${redirectPath}` },
+  })
+  if (error) throw error
 }
 
 export async function getMyCouple() {

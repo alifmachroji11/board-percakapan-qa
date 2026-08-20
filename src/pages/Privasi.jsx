@@ -26,8 +26,10 @@ export default function Privasi() {
         </h2>
         <p className="text-sm leading-relaxed text-ink-soft">
           Jawaban jurnal yang kamu tulis di Kartu Topik & Kotak Waktu, dan nama tampilan (opsional)
-          yang kamu isi pas pairing. Kami nggak minta nomor HP, email, atau data identitas lain di
-          tahap prototype ini — kamu masuk lewat sesi anonim.
+          yang kamu isi pas pairing. Secara default kamu masuk lewat sesi anonim, tanpa data
+          identitas apapun. Kalau kamu pilih hubungkan akun Google (opsional, biar bisa masuk dari
+          device lain tanpa kehilangan akses), kami cuma simpan email dari akun itu — bukan buat
+          hal lain selain identifikasi login kamu.
         </p>
       </section>
 

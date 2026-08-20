@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
-import { MessageCircleHeart, Clock, History } from 'lucide-react'
+import { MessageCircleHeart, Clock, History, UserCircle } from 'lucide-react'
 import PageTransition from '../components/PageTransition.jsx'
 import SplashScreen from '../components/SplashScreen.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
@@ -15,6 +15,7 @@ const TABS = [
   { to: '/app/topik', label: 'Kartu Topik', icon: MessageCircleHeart },
   { to: '/app/kotak-waktu', label: 'Kotak Waktu', icon: Clock },
   { to: '/app/riwayat', label: 'Riwayat', icon: History },
+  { to: '/app/akun', label: 'Akun', icon: UserCircle },
 ]
 
 export default function AppLayout() {

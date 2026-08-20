@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Copy, Check, ArrowRight, Users } from 'lucide-react'
-import { ensureSession, getMyCouple, createCouple, joinCouple } from '../lib/auth.js'
+import { ensureSession, getMyCouple, createCouple, joinCouple, signInWithGoogle } from '../lib/auth.js'
 import { supabase } from '../lib/supabaseClient.js'
 import PillButton from '../components/PillButton.jsx'
 
@@ -73,6 +73,17 @@ export default function Pairing() {
     }
   }
 
+  async function handleGoogleSignIn() {
+    setBusy(true)
+    setError('')
+    try {
+      await signInWithGoogle('/app')
+    } catch (err) {
+      setError(err.message)
+      setBusy(false)
+    }
+  }
+
   async function handleCopy() {
     await navigator.clipboard.writeText(createdCouple.invite_code)
     setCopied(true)
@@ -131,12 +142,27 @@ export default function Pairing() {
 
       {mode === 'pilih' && (
         <div className="flex flex-col gap-3">
+          {error && <p className="text-center text-sm text-terracotta-deep">{error}</p>}
           <PillButton onClick={() => setMode('buat')} className="w-full">
             Buat kode pairing baru
           </PillButton>
           <PillButton variant="secondary" onClick={() => setMode('gabung')} className="w-full">
             Punya kode dari pasangan
           </PillButton>
+
+          <div className="flex items-center gap-3 py-1 text-xs text-ink-soft">
+            <span className="h-px flex-1 bg-cream-deep" />
+            atau
+            <span className="h-px flex-1 bg-cream-deep" />
+          </div>
+
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={busy}
+            className="w-full rounded-full border border-cream-deep bg-surface px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-terracotta/40 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {busy ? 'Menghubungkan...' : 'Udah pernah gabung? Masuk pakai Google'}
+          </button>
         </div>
       )}
 

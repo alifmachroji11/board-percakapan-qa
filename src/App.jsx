@@ -15,6 +15,7 @@ import PertanyaanMinggu from './pages/kotakwaktu/PertanyaanMinggu.jsx'
 import JurnalMinggu from './pages/kotakwaktu/JurnalMinggu.jsx'
 import BukaBarengMinggu from './pages/kotakwaktu/BukaBarengMinggu.jsx'
 import Riwayat from './pages/Riwayat.jsx'
+import Akun from './pages/Akun.jsx'
 
 const SPLASH_SEEN_KEY = 'obrolin_splash_seen'
 
@@ -54,6 +55,7 @@ export default function App() {
             <Route path="kotak-waktu/buka-bareng" element={<BukaBarengMinggu />} />
 
             <Route path="riwayat" element={<Riwayat />} />
+            <Route path="akun" element={<Akun />} />
           </Route>
         </Routes>
       )}
