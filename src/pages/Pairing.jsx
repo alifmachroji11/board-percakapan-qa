@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Copy, Check, ArrowRight, Users, ShieldCheck } from 'lucide-react'
+import { ArrowRight, ShieldCheck } from 'lucide-react'
 import { getMyCouple, createCouple, joinCouple, signInWithGoogle } from '../lib/auth.js'
 import { supabase } from '../lib/supabaseClient.js'
 import PillButton from '../components/PillButton.jsx'
+import WaitingForPartner from '../components/WaitingForPartner.jsx'
 
 export default function Pairing() {
   const navigate = useNavigate()
@@ -14,7 +14,6 @@ export default function Pairing() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [createdCouple, setCreatedCouple] = useState(null)
-  const [copied, setCopied] = useState(false)
   const [checking, setChecking] = useState(true)
   // Google wajib duluan sebelum bisa pairing baru, biar akses ke jurnal
   // nggak gampang ilang gara-gara ganti device. Couple lama yang masih
@@ -67,20 +66,6 @@ export default function Pairing() {
     }
   }, [checkAccount])
 
-  // Kalau nunggu di layar "kode udah dibuat", auto-lanjut begitu pasangan gabung.
-  useEffect(() => {
-    if (!createdCouple) return
-    const channel = supabase
-      .channel(`couple-${createdCouple.id}`)
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'couple_members', filter: `couple_id=eq.${createdCouple.id}` },
-        () => navigate('/app', { replace: true })
-      )
-      .subscribe()
-    return () => supabase.removeChannel(channel)
-  }, [createdCouple, navigate])
-
   async function handleCreate() {
     setBusy(true)
     setError('')
@@ -118,12 +103,6 @@ export default function Pairing() {
     }
   }
 
-  async function handleCopy() {
-    await navigator.clipboard.writeText(createdCouple.invite_code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
-
   if (checking) {
     return <div className="min-h-dvh bg-cream" />
   }
@@ -152,33 +131,11 @@ export default function Pairing() {
   if (createdCouple) {
     return (
       <div className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-6 px-6 text-center">
-        <div className="flex size-14 items-center justify-center rounded-full bg-terracotta/15 text-terracotta-deep">
-          <Users size={26} />
-        </div>
-        <div>
-          <h1 className="text-xl font-extrabold text-ink">Kode pairing kamu</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            Kasih kode ini ke pasanganmu. Begitu dia masukin, kalian otomatis kehubung.
-          </p>
-        </div>
-
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-3 rounded-2xl bg-surface px-8 py-5 shadow-sm shadow-ink/5"
-        >
-          <span className="text-2xl font-extrabold tracking-[0.15em] text-terracotta-deep sm:text-3xl">
-            {createdCouple.invite_code}
-          </span>
-          {copied ? <Check size={20} className="text-sage-deep" /> : <Copy size={20} className="text-ink-soft" />}
-        </button>
-
-        <motion.p
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-          className="text-xs text-ink-soft"
-        >
-          Menunggu pasanganmu gabung...
-        </motion.p>
+        <WaitingForPartner
+          coupleId={createdCouple.id}
+          inviteCode={createdCouple.invite_code}
+          onPartnerJoined={() => navigate('/app', { replace: true })}
+        />
       </div>
     )
   }

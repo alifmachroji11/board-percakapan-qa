@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { ShieldCheck, ShieldAlert, Mail, LogOut, Bell, BellOff } from 'lucide-react'
 import { isAnonymousUser, getUserEmail, linkGoogleAccount, signOut } from '../lib/auth.js'
 import { pushSupported, getPushSubscriptionStatus, enablePushNotifications, disablePushNotifications } from '../lib/push.js'
+import { useCouple } from '../context/CoupleContext.jsx'
 import PillButton from '../components/PillButton.jsx'
+import WaitingForPartner from '../components/WaitingForPartner.jsx'
 
 export default function Akun() {
   const navigate = useNavigate()
+  const { couple, partner, refresh } = useCouple()
   const [loading, setLoading] = useState(true)
   const [anonymous, setAnonymous] = useState(true)
   const [email, setEmail] = useState(null)
@@ -137,6 +140,18 @@ export default function Akun() {
               <Mail size={16} /> {email}
             </div>
           )}
+        </div>
+      )}
+
+      {!partner && (
+        <div className="flex flex-col gap-4 rounded-2xl bg-surface p-5 text-center shadow-sm shadow-ink/5">
+          <WaitingForPartner
+            coupleId={couple.id}
+            inviteCode={couple.invite_code}
+            onPartnerJoined={refresh}
+            title="Belum tersambung ke pasangan"
+            description="Kelewat kasih kodenya pas awal? Ini kode kamu lagi — share ke pasanganmu biar bisa nyambung."
+          />
         </div>
       )}
 

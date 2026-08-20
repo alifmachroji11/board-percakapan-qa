@@ -6,6 +6,7 @@ import PageTransition from '../components/PageTransition.jsx'
 import SplashScreen from '../components/SplashScreen.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import { LogoIcon } from '../components/Logo.jsx'
+import WaitingForPartner from '../components/WaitingForPartner.jsx'
 import { ensureSession, getMyCouple } from '../lib/auth.js'
 import { getCoupleMembers, subscribeToCouple } from '../lib/journal.js'
 import { supabase } from '../lib/supabaseClient.js'
@@ -72,6 +73,13 @@ export default function AppLayout() {
     return <div className="min-h-dvh bg-cream" />
   }
 
+  // Kartu Topik & Kotak Waktu butuh pasangan yang beneran gabung — kalau
+  // masih solo (kode udah dibuat tapi belum ada yang masukin), tahan di
+  // sini dan tawarin kode-nya lagi daripada biarin jawab sendirian.
+  const needsPartner =
+    !coupleState.partner &&
+    (location.pathname.startsWith('/app/topik') || location.pathname.startsWith('/app/kotak-waktu'))
+
   return (
     <CoupleProvider value={{ ...coupleState, refresh: loadCouple }}>
       <div className="min-h-dvh flex flex-col bg-cream">
@@ -111,7 +119,19 @@ export default function AppLayout() {
         <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-6">
           <AnimatePresence mode="wait">
             <PageTransition key={location.pathname}>
-              <Outlet />
+              {needsPartner ? (
+                <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-6 text-center">
+                  <WaitingForPartner
+                    coupleId={coupleState.couple.id}
+                    inviteCode={coupleState.couple.invite_code}
+                    onPartnerJoined={loadCouple}
+                    title="Belum tersambung ke pasangan"
+                    description="Kartu Topik & Kotak Waktu baru bisa dipakai berdua. Kasih kode ini ke pasanganmu dulu."
+                  />
+                </div>
+              ) : (
+                <Outlet />
+              )}
             </PageTransition>
           </AnimatePresence>
         </main>
