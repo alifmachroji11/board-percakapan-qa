@@ -105,8 +105,9 @@ export default function PertanyaanMinggu() {
 
       <DemoPanel>
         <p className="text-xs text-ink-soft">
-          Lompat waktu supaya kamu bisa coba siklus mingguan tanpa nunggu seminggu sungguhan. Ini
-          bakal ngelompatin minggu buat kalian berdua (tersimpan di database couple ini).
+          Ritme mingguan sekarang jalan otomatis di background (server yang majuin tiap 7 hari).
+          Tombol ini cuma buat percepat testing tanpa nunggu seminggu sungguhan — bakal ngelompatin
+          minggu buat kalian berdua (tersimpan di database couple ini).
         </p>
         <PillButton
           variant="soft"

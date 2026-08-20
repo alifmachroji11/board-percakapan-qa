@@ -96,7 +96,10 @@ export async function advanceWeek(coupleId, maxWeek) {
   if (fetchError) throw fetchError
 
   const next = Math.min(couple.current_week + 1, maxWeek)
-  const { error } = await supabase.from('couples').update({ current_week: next }).eq('id', coupleId)
+  const { error } = await supabase
+    .from('couples')
+    .update({ current_week: next, week_started_at: new Date().toISOString() })
+    .eq('id', coupleId)
   if (error) throw error
   return next
 }
