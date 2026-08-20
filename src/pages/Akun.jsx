@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShieldCheck, ShieldAlert, Mail, LogOut } from 'lucide-react'
+import { ShieldCheck, ShieldAlert, Mail, LogOut, Bell, BellOff } from 'lucide-react'
 import { isAnonymousUser, getUserEmail, linkGoogleAccount, signOut } from '../lib/auth.js'
+import { pushSupported, getPushSubscriptionStatus, enablePushNotifications, disablePushNotifications } from '../lib/push.js'
 import PillButton from '../components/PillButton.jsx'
 
 export default function Akun() {
@@ -12,6 +13,9 @@ export default function Akun() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [confirmingLogout, setConfirmingLogout] = useState(false)
+  const [pushStatus, setPushStatus] = useState('unsupported')
+  const [pushBusy, setPushBusy] = useState(false)
+  const [pushError, setPushError] = useState('')
 
   async function loadStatus() {
     setLoading(true)
@@ -29,7 +33,26 @@ export default function Akun() {
     if (desc) setError(decodeURIComponent(desc.replace(/\+/g, ' ')))
 
     loadStatus()
+    if (pushSupported()) getPushSubscriptionStatus().then(setPushStatus)
   }, [])
+
+  async function handleTogglePush() {
+    setPushBusy(true)
+    setPushError('')
+    try {
+      if (pushStatus === 'subscribed') {
+        await disablePushNotifications()
+        setPushStatus('not-subscribed')
+      } else {
+        await enablePushNotifications()
+        setPushStatus('subscribed')
+      }
+    } catch (err) {
+      setPushError(err.message)
+    } finally {
+      setPushBusy(false)
+    }
+  }
 
   async function handleLink() {
     setBusy(true)
@@ -113,6 +136,34 @@ export default function Akun() {
             <div className="flex items-center gap-2 rounded-xl bg-cream px-4 py-3 text-sm text-ink-soft">
               <Mail size={16} /> {email}
             </div>
+          )}
+        </div>
+      )}
+
+      {pushStatus !== 'unsupported' && (
+        <div className="flex flex-col gap-4 rounded-2xl bg-surface p-5 shadow-sm shadow-ink/5">
+          <div className="flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-mustard/15 text-mustard-deep">
+              {pushStatus === 'subscribed' ? <Bell size={20} /> : <BellOff size={20} />}
+            </div>
+            <div>
+              <p className="text-sm font-bold text-ink">Pengingat Kotak Waktu</p>
+              <p className="mt-1 text-sm leading-relaxed text-ink-soft">
+                {pushStatus === 'denied'
+                  ? 'Notifikasi diblokir di browser ini. Aktifin lewat pengaturan situs kalau mau dapet pengingat.'
+                  : 'Dapet notifikasi tiap kali pertanyaan minggu baru kebuka, biar nggak lewat.'}
+              </p>
+            </div>
+          </div>
+          {pushError && <p className="text-sm text-terracotta-deep">{pushError}</p>}
+          {pushStatus !== 'denied' && (
+            <PillButton onClick={handleTogglePush} disabled={pushBusy} className="w-full">
+              {pushBusy
+                ? 'Memproses...'
+                : pushStatus === 'subscribed'
+                  ? 'Matikan notifikasi'
+                  : 'Aktifkan notifikasi'}
+            </PillButton>
           )}
         </div>
       )}
