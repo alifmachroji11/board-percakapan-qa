@@ -5,6 +5,19 @@
   + Kotak Waktu (soft blue, mustard). Dipakai bareng supaya dua
   konsep terasa satu keluarga produk, bukan dua app terpisah.
 */
+/*
+  Deklarasi eksplisit ini bikin browser (terutama Chrome Android) berhenti
+  nge-auto-dark/invert warna situs pas HP-nya lagi dark mode sistem — tanpa
+  ini, browser suka nganggap situs "belum siap dark" dan maksa invert warna
+  sendiri, padahal tema kita udah dikontrol manual lewat class .dark.
+*/
+:root {
+  color-scheme: light;
+}
+:root.dark {
+  color-scheme: dark;
+}
+
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
