@@ -5,7 +5,7 @@
 // `videoUrl` / `articles` = konten pemantik nyata (video YouTube & artikel
 // referensi) yang dikurasi manual per topik, BUKAN dummy — tapi tetap konten
 // pihak ketiga untuk kebutuhan prototype/validasi, bukan produksi bersponsor.
-// `articles[].perspective`: 'agama' (Ahlus Sunnah wal Jamaah/salaf) atau
+// `articles[].perspective`: 'agama' (perspektif Islam) atau
 // 'psikologi' (psikolog/media kesehatan-relasi) — dua sudut pandang
 // disandingkan, bukan buat menyaingkan satu sama lain.
 

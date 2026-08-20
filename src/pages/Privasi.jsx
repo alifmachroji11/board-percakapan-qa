@@ -56,7 +56,7 @@ export default function Privasi() {
         <p className="text-sm leading-relaxed text-ink-soft">
           Video pemantik (YouTube) dan artikel bacaan yang muncul di tiap kartu topik dikurasi
           manual dari sumber pihak ketiga (bukan konten kami), buat bantu mancing obrolan dari dua
-          sudut pandang — psikologi/kesehatan relasi dan Islam (Ahlus Sunnah wal Jamaah/salaf).
+          sudut pandang — psikologi/kesehatan relasi dan Islam.
           Nonton video YouTube dari sini tunduk ke kebijakan privasi YouTube/Google sendiri.
         </p>
       </section>
