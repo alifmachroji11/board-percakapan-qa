@@ -22,9 +22,9 @@ export const TOPICS = [
       'Konteks singkat soal kenapa topik ini sering ditunda, plus 2-3 contoh kalimat pembuka yang nggak terasa menuduh.',
     openerExample:
       '"Aku pengen kita samain dulu gambaran, sebenernya berapa yang biasanya kamu kirim ke rumah tiap bulan?"',
-    videoUrl: 'https://www.youtube.com/watch?v=Ixgnatqpfho',
-    videoTitle: 'Istri Tidak Suka Suami Memberi Uang ke Orang Tuanya | Buya Yahya Menjawab',
-    videoChannel: 'Al-Bahjah TV',
+    videoUrl: 'https://www.youtube.com/watch?v=nZfyukoPpzU',
+    videoTitle: 'Hukum Nafkah Suami terhadap Istri',
+    videoChannel: 'Ustadz Dr. Khalid Basalamah, M.A.',
     articleUrl: 'https://mindsetpsychology.co.id/artikel/kesiapan-finansial-pranikah-psikologi-uang',
     articleTitle: 'Kesiapan Finansial Pranikah: Cara Membicarakan Uang Tanpa Merusak Hubungan',
     articleSource: 'Mindset Psychology',
