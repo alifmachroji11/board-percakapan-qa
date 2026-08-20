@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Copy, Check, ArrowRight, Users, ShieldCheck } from 'lucide-react'
@@ -21,31 +21,51 @@ export default function Pairing() {
   // sesi anonim tetap boleh lewat (nggak dipaksa mundur).
   const [hasAccount, setHasAccount] = useState(false)
 
-  useEffect(() => {
-    let cancelled = false
-    async function check() {
+  const checkAccount = useCallback(
+    async (cancelledRef) => {
       const {
         data: { session },
       } = await supabase.auth.getSession()
 
       if (session) {
         const couple = await getMyCouple()
-        if (!cancelled && couple) {
+        if (!cancelledRef.current && couple) {
           navigate('/app', { replace: true })
           return
         }
       }
 
-      if (!cancelled) {
+      if (!cancelledRef.current) {
         setHasAccount(!!session && !session.user.is_anonymous)
         setChecking(false)
       }
-    }
-    check()
+    },
+    [navigate]
+  )
+
+  useEffect(() => {
+    const cancelledRef = { current: false }
+    checkAccount(cancelledRef)
     return () => {
-      cancelled = true
+      cancelledRef.current = true
     }
-  }, [navigate])
+  }, [checkAccount])
+
+  // Sama kayak guard di AppLayout — tombol back abis dari layar Google kadang
+  // munculin snapshot halaman ini dari bfcache. Cek ulang biar statusnya nggak basi.
+  useEffect(() => {
+    const cancelledRef = { current: false }
+    function handlePageShow(event) {
+      if (!event.persisted) return
+      setChecking(true)
+      checkAccount(cancelledRef)
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => {
+      cancelledRef.current = true
+      window.removeEventListener('pageshow', handlePageShow)
+    }
+  }, [checkAccount])
 
   // Kalau nunggu di layar "kode udah dibuat", auto-lanjut begitu pasangan gabung.
   useEffect(() => {

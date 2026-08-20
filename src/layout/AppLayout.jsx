@@ -46,6 +46,21 @@ export default function AppLayout() {
     loadCouple()
   }, [loadCouple])
 
+  // Tombol back browser (mis. abis dari layar consent Google) kadang cuma
+  // munculin snapshot halaman ini dari bfcache tanpa remount — guard di atas
+  // nggak keulang jalan, jadi orang yang belum pairing bisa keliatan sempet
+  // ngelewatin ke Kartu Topik/Kotak Waktu. Paksa cek ulang begitu itu kejadian.
+  useEffect(() => {
+    function handlePageShow(event) {
+      if (!event.persisted) return
+      setChecking(true)
+      setCoupleState(null)
+      loadCouple()
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [loadCouple])
+
   // current_week bisa majuin sendiri (cron mingguan) sementara halaman ini
   // lagi kebuka — dengerin perubahan biar nggak butuh reload manual.
   useEffect(() => {
