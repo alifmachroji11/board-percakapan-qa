@@ -1,8 +1,21 @@
 import { useNavigate, useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Play, PenLine, BookOpen, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Play, PenLine, BookOpen, BookMarked, ExternalLink } from 'lucide-react'
 import { getTopicById } from '../../data/topics.js'
 import { getYoutubeEmbedUrl } from '../../lib/youtube.js'
 import PillButton from '../../components/PillButton.jsx'
+
+const PERSPECTIVE_META = {
+  agama: {
+    label: 'Perspektif Islam',
+    icon: BookMarked,
+    className: 'text-sage-deep bg-sage/15',
+  },
+  psikologi: {
+    label: 'Perspektif psikologi',
+    icon: BookOpen,
+    className: 'text-soft-blue-deep bg-soft-blue/15',
+  },
+}
 
 export default function DetailTopik() {
   const { topicId } = useParams()
@@ -77,23 +90,35 @@ export default function DetailTopik() {
         <p className="mt-1.5 text-sm italic text-ink">{topic.openerExample}</p>
       </div>
 
-      {topic.articleUrl && (
-        <a
-          href={topic.articleUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5 transition-colors hover:bg-cream-deep"
-        >
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-soft-blue/15 text-soft-blue-deep">
-            <BookOpen size={18} />
-          </div>
-          <div className="flex-1">
-            <p className="text-xs font-bold uppercase tracking-wide text-soft-blue-deep">Bacaan lebih lanjut</p>
-            <p className="text-sm font-semibold text-ink">{topic.articleTitle}</p>
-            <p className="text-xs text-ink-soft">{topic.articleSource}</p>
-          </div>
-          <ExternalLink size={16} className="shrink-0 text-ink-soft" />
-        </a>
+      {topic.articles?.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Bacaan lebih lanjut</p>
+          {topic.articles.map((article) => {
+            const meta = PERSPECTIVE_META[article.perspective] ?? PERSPECTIVE_META.psikologi
+            const Icon = meta.icon
+            return (
+              <a
+                key={article.url}
+                href={article.url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5 transition-colors hover:bg-cream-deep"
+              >
+                <div className={`flex size-10 shrink-0 items-center justify-center rounded-full ${meta.className}`}>
+                  <Icon size={18} />
+                </div>
+                <div className="flex-1">
+                  <p className={`text-xs font-bold uppercase tracking-wide ${meta.className.split(' ')[0]}`}>
+                    {meta.label}
+                  </p>
+                  <p className="text-sm font-semibold text-ink">{article.title}</p>
+                  <p className="text-xs text-ink-soft">{article.source}</p>
+                </div>
+                <ExternalLink size={16} className="shrink-0 text-ink-soft" />
+              </a>
+            )
+          })}
+        </div>
       )}
 
       <PillButton onClick={() => navigate(`/app/topik/${topic.id}/jurnal`)} className="w-full">

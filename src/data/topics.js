@@ -2,9 +2,12 @@
 // (bukan placeholder generik) — lihat spesifikasi produk.
 // `phases` menandai fase hubungan mana yang paling relevan untuk topik ini.
 //
-// `videoUrl` / `articleUrl` = konten pemantik nyata (video YouTube & artikel
+// `videoUrl` / `articles` = konten pemantik nyata (video YouTube & artikel
 // referensi) yang dikurasi manual per topik, BUKAN dummy — tapi tetap konten
 // pihak ketiga untuk kebutuhan prototype/validasi, bukan produksi bersponsor.
+// `articles[].perspective`: 'agama' (Ahlus Sunnah wal Jamaah/salaf) atau
+// 'psikologi' (psikolog/media kesehatan-relasi) — dua sudut pandang
+// disandingkan, bukan buat menyaingkan satu sama lain.
 
 export const PHASES = [
   { id: 'pra-nikah', label: 'Pra-nikah' },
@@ -25,9 +28,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=nZfyukoPpzU',
     videoTitle: 'Hukum Nafkah Suami terhadap Istri',
     videoChannel: 'Ustadz Dr. Khalid Basalamah, M.A.',
-    articleUrl: 'https://mindsetpsychology.co.id/artikel/kesiapan-finansial-pranikah-psikologi-uang',
-    articleTitle: 'Kesiapan Finansial Pranikah: Cara Membicarakan Uang Tanpa Merusak Hubungan',
-    articleSource: 'Mindset Psychology',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://rumaysho.com/14668-menafkahi-orang-tua-yang-tidak-mampu.html',
+        title: 'Menafkahi Orang Tua yang Tidak Mampu',
+        source: 'Rumaysho.com',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://mindsetpsychology.co.id/artikel/kesiapan-finansial-pranikah-psikologi-uang',
+        title: 'Kesiapan Finansial Pranikah: Cara Membicarakan Uang Tanpa Merusak Hubungan',
+        source: 'Mindset Psychology',
+      },
+    ],
   },
   {
     id: 'keterlibatan-mertua',
@@ -41,10 +55,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=1nwE_F24Dq4',
     videoTitle: 'Menghadapi Mertua Tukang Ngatur dan Suka Ikut Campur',
     videoChannel: 'Buat Apa Susah (Psikiater Aimee Nugroho)',
-    articleUrl:
-      'https://mindsetpsychology.co.id/artikel/cara-menetapkan-batasan-boundaries-sehat-dengan-mertua-tanpa-memicu-konflik',
-    articleTitle: 'Cara Menetapkan Batasan (Boundaries) Sehat dengan Mertua Tanpa Memicu Konflik',
-    articleSource: 'Mindset Psychology',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://konsultasisyariah.com/17614-3-hal-yang-wajib-dihindari-dalam-pertengkaran-rumah-tangga.html',
+        title: '3 Hal yang Wajib Dihindari dalam Pertengkaran Rumah Tangga',
+        source: 'KonsultasiSyariah.com',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://mindsetpsychology.co.id/artikel/cara-menetapkan-batasan-boundaries-sehat-dengan-mertua-tanpa-memicu-konflik',
+        title: 'Cara Menetapkan Batasan (Boundaries) Sehat dengan Mertua Tanpa Memicu Konflik',
+        source: 'Mindset Psychology',
+      },
+    ],
   },
   {
     id: 'keputusan-anak',
@@ -58,10 +82,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=aRTABvIC8xo',
     videoTitle: 'Beda Pola Asuh Antara Ayah dan Ibu, Apakah Wajar?',
     videoChannel: 'dr Aisah Dahlan CHt',
-    articleUrl:
-      'https://psikologi.uici.ac.id/2026/02/22/rahasia-hubungan-harmonis-suami-istri-dalam-mendidik-anak-kunci-keluarga-bahagia-dan-anak-tumbuh-optimal/',
-    articleTitle: 'Rahasia Hubungan Harmonis Suami Istri dalam Mendidik Anak',
-    articleSource: 'Psikologi UICI',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://muslim.or.id/20835-pendidikan-anak-tanggung-jawab-siapa.html',
+        title: 'Pendidikan Anak, Tanggung Jawab Siapa?',
+        source: 'Muslim.or.id',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://psikologi.uici.ac.id/2026/02/22/rahasia-hubungan-harmonis-suami-istri-dalam-mendidik-anak-kunci-keluarga-bahagia-dan-anak-tumbuh-optimal/',
+        title: 'Rahasia Hubungan Harmonis Suami Istri dalam Mendidik Anak',
+        source: 'Psikologi UICI',
+      },
+    ],
   },
   {
     id: 'resign-demi-keluarga',
@@ -75,9 +109,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=AupORy2Yxuw',
     videoTitle: 'Suami Berhenti Kerja, Begini Cara Kelola Keuangan Rumah Tangga',
     videoChannel: 'YouTube',
-    articleUrl: 'https://www.ibupedia.com/artikel/keluarga/4-pertimbangan-sebelum-ibu-memutuskan-resign-kerja',
-    articleTitle: '4 Pertimbangan Sebelum Ibu Memutuskan Resign Kerja',
-    articleSource: 'Ibupedia',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://muslim.or.id/98098-ketika-istri-bekerja.html',
+        title: 'Ketika Istri Bekerja',
+        source: 'Muslim.or.id',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.ibupedia.com/artikel/keluarga/4-pertimbangan-sebelum-ibu-memutuskan-resign-kerja',
+        title: '4 Pertimbangan Sebelum Ibu Memutuskan Resign Kerja',
+        source: 'Ibupedia',
+      },
+    ],
   },
   {
     id: 'cara-marah',
@@ -91,10 +136,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=8BvGjvt1utE',
     videoTitle: 'Tips Menghindari Konflik Dengan Pasangan',
     videoChannel: 'Dunia Parenting Indonesia (Rena Masri, S.Psi., M.Si., Psikolog)',
-    articleUrl:
-      'https://www.klikdokter.com/psikologi/relationship/tips-komunikasi-yang-efektif-saat-berkonflik-dengan-pasangan',
-    articleTitle: 'Tips Komunikasi yang Efektif saat Berkonflik dengan Pasangan',
-    articleSource: 'KlikDokter',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://rumaysho.com/16156-5-kiat-meredam-marah.html',
+        title: '5 Kiat Meredam Marah',
+        source: 'Rumaysho.com',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.klikdokter.com/psikologi/relationship/tips-komunikasi-yang-efektif-saat-berkonflik-dengan-pasangan',
+        title: 'Tips Komunikasi yang Efektif saat Berkonflik dengan Pasangan',
+        source: 'KlikDokter',
+      },
+    ],
   },
   {
     id: 'rezeki-tidak-sama',
@@ -108,10 +163,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=TvJrTQHC2iQ',
     videoTitle: 'Rumah Tangga Retak karena Penghasilan Istri Lebih Besar dari Suami, Bagaimana Solusinya?',
     videoChannel: 'Al-Bahjah TV',
-    articleUrl:
-      'https://www.tabloidbintang.com/gaya-hidup/217170-studi-ungkap-dampak-istri-berpenghasilan-lebih-tinggi-dari-suami-benarkah-bisa-memengaruhi-hubungan',
-    articleTitle: 'Studi Ungkap Dampak Istri Berpenghasilan Lebih Tinggi dari Suami',
-    articleSource: 'Tabloid Bintang',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://muslim.or.id/111586-istri-lebih-kaya-dan-lebih-berilmu-dari-suami-apakah-qiwamah-masih-relevan.html',
+        title: 'Istri Lebih Kaya dan Berilmu dari Suami: Apakah Qiwamah Masih Relevan?',
+        source: 'Muslim.or.id',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.tabloidbintang.com/gaya-hidup/217170-studi-ungkap-dampak-istri-berpenghasilan-lebih-tinggi-dari-suami-benarkah-bisa-memengaruhi-hubungan',
+        title: 'Studi Ungkap Dampak Istri Berpenghasilan Lebih Tinggi dari Suami',
+        source: 'Tabloid Bintang',
+      },
+    ],
   },
   {
     id: 'kendali-keuangan',
@@ -125,10 +190,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=uXgy2QGADsk',
     videoTitle: '5 Tipe Pengaturan Keuangan untuk Suami Istri, Tipe Mana yang Adil dan Buat Bahagia?',
     videoChannel: 'ZAP Finance',
-    articleUrl:
-      'https://www.finetiks.com/blog/tips-mengelola-keuangan-keluarga-satu-pintu-kunci-rumah-tangga-harmonis',
-    articleTitle: 'Tips Mengelola Keuangan Keluarga Satu Pintu: Kunci Rumah Tangga Harmonis',
-    articleSource: 'Finetiks',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://rumaysho.com/41885-haruskah-suami-terbuka-soal-gaji-ini-jawaban-syariat-dan-solusi-rumah-tangga.html',
+        title: 'Haruskah Suami Terbuka Soal Gaji? Ini Jawaban Syariat dan Solusi Rumah Tangga',
+        source: 'Rumaysho.com',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.finetiks.com/blog/tips-mengelola-keuangan-keluarga-satu-pintu-kunci-rumah-tangga-harmonis',
+        title: 'Tips Mengelola Keuangan Keluarga Satu Pintu: Kunci Rumah Tangga Harmonis',
+        source: 'Finetiks',
+      },
+    ],
   },
   {
     id: 'tinggal-dekat-siapa',
@@ -142,9 +217,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=cTPFPEBimYA',
     videoTitle: "Mom's Meet Up — Tinggal Bareng Mertua vs Rumah Sendiri",
     videoChannel: "Mom's Meet Up",
-    articleUrl: 'https://www.kalindoland.co.id/read-plus-minus-tinggal-bersama-orang-tua-setelah-menikah-270.html',
-    articleTitle: 'Plus Minus Tinggal Bersama Orang Tua Setelah Menikah',
-    articleSource: 'Kalindoland',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://konsultasisyariah.com/39815-setelah-menikah-lebih-baik-pisah-rumah-dengan-orang-tua-atau-serumah.html',
+        title: 'Setelah Menikah Lebih Baik Pisah Rumah dengan Orang Tua atau Serumah?',
+        source: 'KonsultasiSyariah.com',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.kalindoland.co.id/read-plus-minus-tinggal-bersama-orang-tua-setelah-menikah-270.html',
+        title: 'Plus Minus Tinggal Bersama Orang Tua Setelah Menikah',
+        source: 'Kalindoland',
+      },
+    ],
   },
   {
     id: 'bagi-tugas-rumah',
@@ -158,10 +244,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=2QEnPY7tUtA',
     videoTitle: 'Buat Bapak-Bapak!! Pekerjaan Rumah Tangga Bukan Kewajiban Istri',
     videoChannel: 'Mamah Dedeh (SIRQOL)',
-    articleUrl:
-      'https://www.logosconsulting.co.id/media/dalam-pernikahan-bagaimana-cara-membagi-tugas-dan-tanggung-jawab-secara-adil/',
-    articleTitle: 'Dalam Pernikahan: Bagaimana Cara Membagi Tugas dan Tanggung Jawab Secara Adil?',
-    articleSource: 'Logos Consulting',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://muslim.or.id/39376-sunnah-membantu-istri-di-rumah.html',
+        title: 'Sunnah Membantu Istri di Rumah',
+        source: 'Muslim.or.id',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.logosconsulting.co.id/media/dalam-pernikahan-bagaimana-cara-membagi-tugas-dan-tanggung-jawab-secara-adil/',
+        title: 'Dalam Pernikahan: Bagaimana Cara Membagi Tugas dan Tanggung Jawab Secara Adil?',
+        source: 'Logos Consulting',
+      },
+    ],
   },
   {
     id: 'hubungan-monoton',
@@ -175,9 +271,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=CrVnBH_pkJQ',
     videoTitle: 'Mengatasi Jenuh / Bosan Dalam Rumah Tangga',
     videoChannel: 'dr Aisah Dahlan CHt',
-    articleUrl: 'https://www.halodoc.com/artikel/monoton-dalam-hubungan-ini-cara-bangkitkan-percikan',
-    articleTitle: 'Monoton dalam Hubungan? Ini Cara Bangkitkan Percikan',
-    articleSource: 'Halodoc',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://rumaysho.com/8896-pujilah-istrimu.html',
+        title: 'Pujilah Istrimu',
+        source: 'Rumaysho.com',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.halodoc.com/artikel/monoton-dalam-hubungan-ini-cara-bangkitkan-percikan',
+        title: 'Monoton dalam Hubungan? Ini Cara Bangkitkan Percikan',
+        source: 'Halodoc',
+      },
+    ],
   },
   {
     id: 'rencana-anak',
@@ -191,9 +298,20 @@ export const TOPICS = [
     videoUrl: 'https://www.youtube.com/watch?v=0ZfuDt4KMwA',
     videoTitle: 'Checklist Kesiapan Finansial dan Mental Sebelum Menikah',
     videoChannel: 'POD. RUANG TUNGGU',
-    articleUrl: 'https://hellosehat.com/kehamilan/kesuburan/program-hamil/mempertimbangkan-punya-anak-banyak/',
-    articleTitle: '5 Pertimbangan Sebelum Memutuskan Punya Anak Banyak',
-    articleSource: 'Hello Sehat',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://muslim.or.id/1055-seperti-apa-keluarga-berencana-islami.html',
+        title: 'Seperti Apa Keluarga Berencana Islami?',
+        source: 'Muslim.or.id',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://hellosehat.com/kehamilan/kesuburan/program-hamil/mempertimbangkan-punya-anak-banyak/',
+        title: '5 Pertimbangan Sebelum Memutuskan Punya Anak Banyak',
+        source: 'Hello Sehat',
+      },
+    ],
   },
 ]
 
