@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PHASES, getTopicsByPhase } from '../../data/topics.js'
-import { getAllEntries, groupEntryPairs, deriveStatus, pairKey } from '../../lib/journal.js'
+import {
+  getAllEntries,
+  groupEntryPairs,
+  deriveStatus,
+  pairKey,
+  subscribeToCoupleJournal,
+} from '../../lib/journal.js'
 import { supabase } from '../../lib/supabaseClient.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import StatusBadge from '../../components/StatusBadge.jsx'
@@ -23,8 +29,10 @@ export default function PilihFase() {
       if (!cancelled) setPairs(groupEntryPairs(entries, user.id))
     }
     load()
+    const unsubscribe = subscribeToCoupleJournal(couple.id, load)
     return () => {
       cancelled = true
+      unsubscribe()
     }
   }, [couple.id])
 

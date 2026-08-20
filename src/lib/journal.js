@@ -130,3 +130,17 @@ export function subscribeToCoupleJournal(coupleId, onChange) {
     .subscribe()
   return () => supabase.removeChannel(channel)
 }
+
+// Langganan realtime buat baris couples-nya sendiri — dipakai supaya
+// current_week (dimajuin cron mingguan) ke-update live tanpa reload.
+export function subscribeToCouple(coupleId, onChange) {
+  const channel = supabase
+    .channel(`couple-row-${coupleId}`)
+    .on(
+      'postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'couples', filter: `id=eq.${coupleId}` },
+      onChange
+    )
+    .subscribe()
+  return () => supabase.removeChannel(channel)
+}

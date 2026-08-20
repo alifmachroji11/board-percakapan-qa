@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TOPICS } from '../data/topics.js'
 import { WEEKLY_QUESTIONS } from '../data/weeklyQuestions.js'
-import { getAllEntries, groupEntryPairs, deriveStatus, pairKey } from '../lib/journal.js'
+import {
+  getAllEntries,
+  groupEntryPairs,
+  deriveStatus,
+  pairKey,
+  subscribeToCoupleJournal,
+} from '../lib/journal.js'
 import { supabase } from '../lib/supabaseClient.js'
 import { useCouple } from '../context/CoupleContext.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
@@ -25,8 +31,10 @@ export default function Riwayat() {
       setLoading(false)
     }
     load()
+    const unsubscribe = subscribeToCoupleJournal(couple.id, load)
     return () => {
       cancelled = true
+      unsubscribe()
     }
   }, [couple.id])
 

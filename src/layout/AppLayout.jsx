@@ -7,7 +7,7 @@ import SplashScreen from '../components/SplashScreen.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import { LogoIcon } from '../components/Logo.jsx'
 import { ensureSession, getMyCouple } from '../lib/auth.js'
-import { getCoupleMembers } from '../lib/journal.js'
+import { getCoupleMembers, subscribeToCouple } from '../lib/journal.js'
 import { supabase } from '../lib/supabaseClient.js'
 import { CoupleProvider } from '../context/CoupleContext.jsx'
 
@@ -44,6 +44,13 @@ export default function AppLayout() {
   useEffect(() => {
     loadCouple()
   }, [loadCouple])
+
+  // current_week bisa majuin sendiri (cron mingguan) sementara halaman ini
+  // lagi kebuka — dengerin perubahan biar nggak butuh reload manual.
+  useEffect(() => {
+    if (!coupleState) return
+    return subscribeToCouple(coupleState.couple.id, loadCouple)
+  }, [coupleState?.couple.id, loadCouple])
 
   if (checking || !coupleState) {
     return <div className="min-h-dvh bg-cream" />
