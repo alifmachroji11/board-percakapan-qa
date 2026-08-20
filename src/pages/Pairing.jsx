@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Copy, Check, ArrowRight, Users } from 'lucide-react'
-import { ensureSession, getMyCouple, createCouple, joinCouple, signInWithGoogle } from '../lib/auth.js'
+import { Copy, Check, ArrowRight, Users, ShieldCheck } from 'lucide-react'
+import { getMyCouple, createCouple, joinCouple, signInWithGoogle } from '../lib/auth.js'
 import { supabase } from '../lib/supabaseClient.js'
 import PillButton from '../components/PillButton.jsx'
 
@@ -15,15 +15,31 @@ export default function Pairing() {
   const [error, setError] = useState('')
   const [createdCouple, setCreatedCouple] = useState(null)
   const [copied, setCopied] = useState(false)
+  const [checking, setChecking] = useState(true)
+  // Google wajib duluan sebelum bisa pairing baru, biar akses ke jurnal
+  // nggak gampang ilang gara-gara ganti device. Couple lama yang masih
+  // sesi anonim tetap boleh lewat (nggak dipaksa mundur).
+  const [hasAccount, setHasAccount] = useState(false)
 
-  // Kalau ternyata udah tergabung ke couple (mis. buka /app/pairing manual
-  // padahal udah pairing), langsung lempar ke app.
   useEffect(() => {
     let cancelled = false
     async function check() {
-      await ensureSession()
-      const couple = await getMyCouple()
-      if (!cancelled && couple) navigate('/app', { replace: true })
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (session) {
+        const couple = await getMyCouple()
+        if (!cancelled && couple) {
+          navigate('/app', { replace: true })
+          return
+        }
+      }
+
+      if (!cancelled) {
+        setHasAccount(!!session && !session.user.is_anonymous)
+        setChecking(false)
+      }
     }
     check()
     return () => {
@@ -49,7 +65,6 @@ export default function Pairing() {
     setBusy(true)
     setError('')
     try {
-      await ensureSession()
       const couple = await createCouple(name)
       setCreatedCouple(couple)
     } catch (err) {
@@ -63,7 +78,6 @@ export default function Pairing() {
     setBusy(true)
     setError('')
     try {
-      await ensureSession()
       await joinCouple(code, name)
       navigate('/app', { replace: true })
     } catch (err) {
@@ -77,7 +91,7 @@ export default function Pairing() {
     setBusy(true)
     setError('')
     try {
-      await signInWithGoogle('/app')
+      await signInWithGoogle('/app/pairing')
     } catch (err) {
       setError(err.message)
       setBusy(false)
@@ -88,6 +102,31 @@ export default function Pairing() {
     await navigator.clipboard.writeText(createdCouple.invite_code)
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
+  }
+
+  if (checking) {
+    return <div className="min-h-dvh bg-cream" />
+  }
+
+  if (!hasAccount) {
+    return (
+      <div className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-6 px-6 text-center">
+        <div className="flex size-14 items-center justify-center rounded-full bg-terracotta/15 text-terracotta-deep">
+          <ShieldCheck size={26} />
+        </div>
+        <div>
+          <h1 className="text-2xl font-extrabold text-ink">Kamu &amp; pasangan</h1>
+          <p className="mt-1 text-sm leading-relaxed text-ink-soft">
+            Masuk pakai Google dulu, biar kamu bisa pindah device kapan aja tanpa takut jurnal &amp;
+            pasangan kalian hilang.
+          </p>
+        </div>
+        {error && <p className="text-sm text-terracotta-deep">{error}</p>}
+        <PillButton onClick={handleGoogleSignIn} disabled={busy} className="w-full">
+          {busy ? 'Menghubungkan...' : 'Masuk dengan Google'}
+        </PillButton>
+      </div>
+    )
   }
 
   if (createdCouple) {
@@ -128,9 +167,7 @@ export default function Pairing() {
     <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-6">
       <div className="text-center">
         <h1 className="text-2xl font-extrabold text-ink">Kamu &amp; pasangan</h1>
-        <p className="mt-1 text-sm text-ink-soft">
-          Belum perlu akun — cukup satu kode buat saling terhubung berdua.
-        </p>
+        <p className="mt-1 text-sm text-ink-soft">Cukup satu kode buat saling terhubung berdua.</p>
       </div>
 
       <input
@@ -149,20 +186,6 @@ export default function Pairing() {
           <PillButton variant="secondary" onClick={() => setMode('gabung')} className="w-full">
             Punya kode dari pasangan
           </PillButton>
-
-          <div className="flex items-center gap-3 py-1 text-xs text-ink-soft">
-            <span className="h-px flex-1 bg-cream-deep" />
-            atau
-            <span className="h-px flex-1 bg-cream-deep" />
-          </div>
-
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={busy}
-            className="w-full rounded-full border border-cream-deep bg-surface px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-terracotta/40 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {busy ? 'Menghubungkan...' : 'Udah pernah gabung? Masuk pakai Google'}
-          </button>
         </div>
       )}
 

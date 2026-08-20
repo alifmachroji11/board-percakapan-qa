@@ -60,7 +60,7 @@ const FAQ = [
   },
   {
     q: 'Pasanganku harus pakai app yang sama nggak?',
-    a: 'Iya, tapi nggak perlu bikin akun ribet — satu orang generate kode pairing, pasangan masukin kodenya buat saling terhubung. Setelah itu kalian berdua beneran saling ngirim & baca jawaban masing-masing.',
+    a: 'Iya. Masing-masing masuk pakai akun Google (biar akses ke jurnal aman meski ganti HP), lalu satu orang generate kode pairing dan pasangan masukin kodenya buat saling terhubung. Setelah itu kalian berdua beneran saling ngirim & baca jawaban masing-masing.',
   },
 ]
 
