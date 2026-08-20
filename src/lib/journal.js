@@ -87,23 +87,6 @@ export async function markOpened(coupleId, type, refId) {
   if (error) throw error
 }
 
-export async function advanceWeek(coupleId, maxWeek) {
-  const { data: couple, error: fetchError } = await supabase
-    .from('couples')
-    .select('current_week')
-    .eq('id', coupleId)
-    .single()
-  if (fetchError) throw fetchError
-
-  const next = Math.min(couple.current_week + 1, maxWeek)
-  const { error } = await supabase
-    .from('couples')
-    .update({ current_week: next, week_started_at: new Date().toISOString() })
-    .eq('id', coupleId)
-  if (error) throw error
-  return next
-}
-
 /**
  * Status baca-manusia dari sepasang entri (mine + partner).
  * type 'topik': belum-dibahas | menunggu-pasangan | siap-dibuka | sudah-dibuka

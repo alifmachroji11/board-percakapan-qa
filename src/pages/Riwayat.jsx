@@ -78,18 +78,41 @@ export default function Riwayat() {
           {WEEKLY_QUESTIONS.filter((q) => q.week <= currentWeek).map((q) => {
             const isPastWeek = q.week < currentWeek
             const status = deriveStatus(pairs.get(pairKey('kotak-waktu', q.week)), { isPastWeek })
-            return (
-              <Link
-                key={q.week}
-                to="/app/kotak-waktu"
-                className="flex items-center justify-between gap-3 rounded-xl bg-surface p-4 shadow-sm shadow-ink/5"
-              >
+            // Cuma minggu yang jawabannya lengkap yang punya sesuatu buat dilihat —
+            // minggu ini (belum lengkap) diarahkan ke alur normal, minggu lama yang
+            // "dilewati" nggak punya isi jadi nggak usah bisa diklik.
+            const href =
+              status === 'siap-dibuka' || status === 'sudah-dibuka'
+                ? `/app/kotak-waktu/buka-bareng/${q.week}`
+                : !isPastWeek
+                  ? '/app/kotak-waktu'
+                  : null
+
+            const content = (
+              <>
                 <div>
                   <p className="text-xs font-semibold text-soft-blue-deep">Minggu ke-{q.week}</p>
                   <p className="text-sm font-semibold leading-snug text-ink">{q.question}</p>
                 </div>
                 <StatusBadge status={status} />
+              </>
+            )
+
+            return href ? (
+              <Link
+                key={q.week}
+                to={href}
+                className="flex items-center justify-between gap-3 rounded-xl bg-surface p-4 shadow-sm shadow-ink/5"
+              >
+                {content}
               </Link>
+            ) : (
+              <div
+                key={q.week}
+                className="flex items-center justify-between gap-3 rounded-xl bg-surface/60 p-4 opacity-70"
+              >
+                {content}
+              </div>
             )
           })}
         </div>

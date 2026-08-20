@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Mail, MailOpen } from 'lucide-react'
 import { getWeeklyQuestion } from '../../data/weeklyQuestions.js'
@@ -9,10 +9,15 @@ import PillButton from '../../components/PillButton.jsx'
 
 export default function BukaBarengMinggu() {
   const navigate = useNavigate()
+  const { week: weekParam } = useParams()
   const { couple, partner } = useCouple()
   const partnerName = partner?.display_name || 'pasanganmu'
-  const week = couple.current_week
+  // Riwayat bisa link ke minggu lama lewat :week di URL — kalau nggak ada
+  // (dibuka dari alur normal minggu ini), pakai minggu couple saat ini.
+  const week = weekParam ? Number(weekParam) : couple.current_week
   const question = getWeeklyQuestion(week)
+  const isHistoryView = week !== couple.current_week
+  const backTo = isHistoryView ? '/app/riwayat' : '/app/kotak-waktu'
 
   const [loading, setLoading] = useState(true)
   const [pair, setPair] = useState({ mine: null, partner: null })
@@ -23,6 +28,9 @@ export default function BukaBarengMinggu() {
     getEntryPair(couple.id, 'kotak-waktu', week).then((result) => {
       if (cancelled) return
       setPair(result)
+      // Minggu yang udah pernah dibuka (mis. diliat lagi lewat Riwayat) langsung
+      // ditampilin isinya, nggak perlu ngulang animasi "buka kapsul".
+      setStep(result.mine?.opened_at || result.partner?.opened_at ? 'open' : 'closed')
       setLoading(false)
     })
     return () => {
@@ -36,7 +44,7 @@ export default function BukaBarengMinggu() {
     return (
       <div className="text-center text-ink-soft">
         Belum ada jawaban lengkap untuk dibuka minggu ini.{' '}
-        <Link to="/app/kotak-waktu" className="font-semibold text-soft-blue-deep">
+        <Link to={backTo} className="font-semibold text-soft-blue-deep">
           Kembali
         </Link>
       </div>
@@ -54,7 +62,7 @@ export default function BukaBarengMinggu() {
   return (
     <div className="flex flex-col gap-6">
       <button
-        onClick={() => navigate('/app/kotak-waktu')}
+        onClick={() => navigate(backTo)}
         className="flex w-fit items-center gap-1.5 text-sm font-semibold text-ink-soft hover:text-ink"
       >
         <ArrowLeft size={16} /> Kembali
@@ -121,8 +129,8 @@ export default function BukaBarengMinggu() {
       )}
 
       {step === 'open' && (
-        <PillButton as={Link} to="/app/kotak-waktu" variant="secondary" className="w-full">
-          Selesai untuk minggu ini
+        <PillButton as={Link} to={backTo} variant="secondary" className="w-full">
+          {isHistoryView ? 'Kembali ke riwayat' : 'Selesai untuk minggu ini'}
         </PillButton>
       )}
     </div>

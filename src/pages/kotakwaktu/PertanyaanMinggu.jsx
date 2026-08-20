@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Mail, Lock, FastForward } from 'lucide-react'
+import { Mail, Lock } from 'lucide-react'
 import { WEEKLY_QUESTIONS, getWeeklyQuestion } from '../../data/weeklyQuestions.js'
-import { getEntryPair, deriveStatus, advanceWeek, subscribeToCoupleJournal } from '../../lib/journal.js'
+import { getEntryPair, deriveStatus, subscribeToCoupleJournal } from '../../lib/journal.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
 import StatusBadge from '../../components/StatusBadge.jsx'
-import DemoPanel from '../../components/DemoPanel.jsx'
 
 export default function PertanyaanMinggu() {
   const navigate = useNavigate()
-  const { couple, partner, refresh } = useCouple()
+  const { couple, partner } = useCouple()
   const partnerName = partner?.display_name || 'pasanganmu'
   const week = couple.current_week
   const question = getWeeklyQuestion(week)
-  const isLastWeek = week >= WEEKLY_QUESTIONS.length
 
   const [loading, setLoading] = useState(true)
   const [pair, setPair] = useState({ mine: null, partner: null })
@@ -38,11 +36,6 @@ export default function PertanyaanMinggu() {
   if (loading) return null
 
   const status = deriveStatus(pair)
-
-  async function handleAdvanceWeek() {
-    await advanceWeek(couple.id, WEEKLY_QUESTIONS.length)
-    await refresh()
-  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -102,22 +95,6 @@ export default function PertanyaanMinggu() {
           .
         </div>
       )}
-
-      <DemoPanel>
-        <p className="text-xs text-ink-soft">
-          Ritme mingguan sekarang jalan otomatis di background (server yang majuin tiap 7 hari).
-          Tombol ini cuma buat percepat testing tanpa nunggu seminggu sungguhan — bakal ngelompatin
-          minggu buat kalian berdua (tersimpan di database couple ini).
-        </p>
-        <PillButton
-          variant="soft"
-          onClick={handleAdvanceWeek}
-          disabled={isLastWeek}
-          className="w-fit"
-        >
-          <FastForward size={16} /> Simulasi: Lompat ke minggu berikutnya
-        </PillButton>
-      </DemoPanel>
     </div>
   )
 }

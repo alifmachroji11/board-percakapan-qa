@@ -10,7 +10,6 @@ import {
   Mail,
   Repeat,
   ChevronDown,
-  Quote,
   ArrowRight,
 } from 'lucide-react'
 import { TOPICS } from '../data/topics.js'
@@ -25,21 +24,6 @@ const fadeUp = {
   viewport: { once: true, margin: '-60px' },
   transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
 }
-
-// DATA DUMMY — testimoni ini kutipan rekaan untuk prototype,
-// ganti dengan testimoni asli setelah sesi user testing.
-const TESTIMONIALS = [
-  {
-    quote:
-      '"Kita udah 2 tahun pacaran, tapi baru lewat kartu topik ini kita ngobrol soal duit ke orang tua. Ternyata dari dulu dia juga pengen ngomong, cuma sama-sama nunggu momen yang pas."',
-    name: 'R., 29 tahun',
-  },
-  {
-    quote:
-      '"Enaknya jawab sendiri dulu di jurnal. Jadi nggak kebawa harus setuju sama jawaban pasangan pas lagi nulis."',
-    name: 'A., 31 tahun',
-  },
-]
 
 const FAQ = [
   {
@@ -263,20 +247,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* ============ TESTIMONIAL (dummy) ============ */}
-      <motion.section {...fadeUp} className="mx-auto w-full max-w-3xl px-5 py-10">
-        <h2 className="text-center text-2xl font-extrabold">Kata mereka yang udah coba</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="rounded-2xl bg-surface p-5 shadow-sm shadow-ink/5">
-              <Quote size={20} className="text-dusty-pink-deep" />
-              <p className="mt-2 text-sm italic leading-relaxed text-ink">{t.quote}</p>
-              <p className="mt-3 text-xs font-semibold text-ink-soft">— {t.name}</p>
-            </div>
-          ))}
-        </div>
-      </motion.section>
-
       {/* ============ FAQ ============ */}
       <motion.section {...fadeUp} className="mx-auto w-full max-w-2xl px-5 py-10">
         <h2 className="text-center text-2xl font-extrabold">Pertanyaan yang sering ditanya</h2>
@@ -320,7 +290,7 @@ export default function Landing() {
       </motion.section>
 
       <footer className="border-t border-cream-deep px-5 py-8 text-center text-xs text-ink-soft">
-        Obrolin & Kotak Waktu — prototype validasi, bukan produk final.
+        Obrolin & Kotak Waktu — dibuat buat pasangan Indonesia yang mau lebih sering ngobrol.
         <br />
         <Link to="/privasi" className="mt-1 inline-block font-semibold text-terracotta-deep underline">
           Kebijakan Privasi

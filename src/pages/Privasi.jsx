@@ -15,8 +15,8 @@ export default function Privasi() {
       <div>
         <h1 className="text-2xl font-extrabold text-ink">Kebijakan Privasi</h1>
         <p className="mt-1 text-sm text-ink-soft">
-          Ditulis sesederhana mungkin — ini prototype tahap validasi, bukan produk final, tapi
-          data yang kamu tulis di sini tetap kami perlakukan serius.
+          Ditulis sesederhana mungkin, tapi data yang kamu tulis di sini tetap kami perlakukan
+          serius.
         </p>
       </div>
 
@@ -65,12 +65,11 @@ export default function Privasi() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-bold uppercase tracking-wide text-terracotta-deep">
-          Karena ini prototype
+          Produk yang terus dikembangkan
         </h2>
         <p className="text-sm leading-relaxed text-ink-soft">
-          Obrolin masih tahap validasi, dibangun buat diuji ke calon pengguna nyata — bukan produk
-          final berbayar. Data bisa direset/dihapus sewaktu-waktu selama tahap pengembangan ini.
-          Kalau kamu mau data kamu dihapus kapan aja, hubungi kami.
+          Obrolin terus dikembangkan dan ditambah fiturnya dari waktu ke waktu, tapi jawaban jurnal
+          yang sudah kalian tulis nggak kami hapus atau reset begitu saja.
         </p>
       </section>
 
