@@ -96,7 +96,7 @@ export default function Pairing() {
           onClick={handleCopy}
           className="flex items-center gap-3 rounded-2xl bg-surface px-8 py-5 shadow-sm shadow-ink/5"
         >
-          <span className="text-3xl font-extrabold tracking-[0.2em] text-terracotta-deep">
+          <span className="text-2xl font-extrabold tracking-[0.15em] text-terracotta-deep sm:text-3xl">
             {createdCouple.invite_code}
           </span>
           {copied ? <Check size={20} className="text-sage-deep" /> : <Copy size={20} className="text-ink-soft" />}
@@ -161,11 +161,11 @@ export default function Pairing() {
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             placeholder="Masukin kode dari pasangan"
-            maxLength={6}
-            className="w-full rounded-2xl bg-surface p-4 text-center text-lg font-bold tracking-[0.3em] text-ink shadow-sm shadow-ink/5 outline-none ring-terracotta/30 placeholder:text-sm placeholder:font-normal placeholder:tracking-normal placeholder:text-ink-soft/60 focus:ring-2"
+            maxLength={8}
+            className="w-full rounded-2xl bg-surface p-4 text-center text-lg font-bold tracking-[0.25em] text-ink shadow-sm shadow-ink/5 outline-none ring-terracotta/30 placeholder:text-sm placeholder:font-normal placeholder:tracking-normal placeholder:text-ink-soft/60 focus:ring-2"
           />
           {error && <p className="text-center text-sm text-terracotta-deep">{error}</p>}
-          <PillButton onClick={handleJoin} disabled={busy || code.trim().length < 6} className="w-full">
+          <PillButton onClick={handleJoin} disabled={busy || code.trim().length < 8} className="w-full">
             {busy ? 'Menghubungkan...' : 'Gabung sekarang'} <ArrowRight size={18} />
           </PillButton>
           <button onClick={() => setMode('pilih')} className="text-sm text-ink-soft underline">

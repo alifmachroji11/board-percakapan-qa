@@ -56,11 +56,11 @@ const FAQ = [
   },
   {
     q: 'Jawabanku disimpan di mana?',
-    a: 'Di prototype ini, jawaban tersimpan di penyimpanan lokal perangkatmu (belum ada server sungguhan). Di versi nyata nanti, datanya akan disimpan lebih aman & bisa diakses dari perangkat manapun.',
+    a: 'Di server (bukan cuma di HP kamu), terkunci per pasangan — cuma kamu & pasangan yang terhubung lewat kode pairing yang bisa lihat jawaban kalian berdua. Selengkapnya di kebijakan privasi (link di bagian bawah halaman).',
   },
   {
     q: 'Pasanganku harus pakai app yang sama nggak?',
-    a: 'Di prototype ini, jawaban pasangan disimulasikan lewat panel demo supaya kamu bisa coba sendirian. Di versi nyata, kalian berdua akan pakai akun masing-masing yang saling terhubung.',
+    a: 'Iya, tapi nggak perlu bikin akun ribet — satu orang generate kode pairing, pasangan masukin kodenya buat saling terhubung. Setelah itu kalian berdua beneran saling ngirim & baca jawaban masing-masing.',
   },
 ]
 
@@ -316,6 +316,10 @@ export default function Landing() {
 
       <footer className="border-t border-cream-deep px-5 py-8 text-center text-xs text-ink-soft">
         Obrolin & Kotak Waktu — prototype validasi, bukan produk final.
+        <br />
+        <Link to="/privasi" className="mt-1 inline-block font-semibold text-terracotta-deep underline">
+          Kebijakan Privasi
+        </Link>
       </footer>
     </div>
   )

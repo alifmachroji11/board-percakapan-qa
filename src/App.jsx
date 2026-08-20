@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import SplashScreen from './components/SplashScreen.jsx'
 import Landing from './pages/Landing.jsx'
+import Privasi from './pages/Privasi.jsx'
 import AppLayout from './layout/AppLayout.jsx'
 import AppHome from './pages/AppHome.jsx'
 import Pairing from './pages/Pairing.jsx'
@@ -36,6 +37,7 @@ export default function App() {
       {!showSplash && (
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/privasi" element={<Privasi />} />
 
           <Route path="/app/pairing" element={<Pairing />} />
 
