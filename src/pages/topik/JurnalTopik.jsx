@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { ArrowLeft, Lock, Sparkles } from 'lucide-react'
 import { getTopicById } from '../../data/topics.js'
-import { getEntryPair, submitAnswer, subscribeToCoupleJournal } from '../../lib/journal.js'
+import { getEntryPair, submitAnswer, subscribeToCoupleJournal, pairKey } from '../../lib/journal.js'
+import { getAllTopicStatuses, setTopicStatus, subscribeToTopicStatus } from '../../lib/topicStatus.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
+import AgreementBadge from '../../components/AgreementBadge.jsx'
 
 export default function JurnalTopik() {
   const { topicId } = useParams()
@@ -17,6 +19,7 @@ export default function JurnalTopik() {
   const [pair, setPair] = useState({ mine: null, partner: null })
   const [draft, setDraft] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [agreementStatus, setAgreementStatus] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -29,6 +32,22 @@ export default function JurnalTopik() {
     }
     load()
     const unsubscribe = subscribeToCoupleJournal(couple.id, load)
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
+  }, [couple.id, topicId])
+
+  useEffect(() => {
+    let cancelled = false
+    function loadStatus() {
+      getAllTopicStatuses(couple.id).then((map) => {
+        if (cancelled) return
+        setAgreementStatus(map.get(pairKey('topik', topicId))?.status ?? null)
+      })
+    }
+    loadStatus()
+    const unsubscribe = subscribeToTopicStatus(couple.id, loadStatus)
     return () => {
       cancelled = true
       unsubscribe()
@@ -91,6 +110,23 @@ export default function JurnalTopik() {
           <PillButton onClick={handleSubmit} disabled={!draft.trim() || submitting} className="w-full">
             {submitting ? 'Menyimpan...' : 'Kirim jawabanku'}
           </PillButton>
+
+          {agreementStatus === 'lewati-dulu' ? (
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-surface p-3">
+              <p className="text-xs text-ink-soft">Topik ini ditandai dilewati dulu. Tulis jawaban kapan aja buat lanjut lagi.</p>
+              <AgreementBadge status={agreementStatus} />
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setAgreementStatus('lewati-dulu')
+                setTopicStatus(couple.id, 'topik', topicId, 'lewati-dulu')
+              }}
+              className="text-center text-xs font-semibold text-ink-soft hover:text-ink"
+            >
+              Belum siap bahas topik ini — lewati dulu
+            </button>
+          )}
         </>
       ) : (
         <div className="flex flex-col gap-5">
