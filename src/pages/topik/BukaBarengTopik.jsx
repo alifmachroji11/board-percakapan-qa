@@ -3,9 +3,11 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Heart, ArrowLeft } from 'lucide-react'
 import { getTopicById } from '../../data/topics.js'
-import { getEntryPair, markOpened } from '../../lib/journal.js'
+import { getEntryPair, markOpened, pairKey } from '../../lib/journal.js'
+import { getAllTopicStatuses, setTopicStatus, subscribeToTopicStatus } from '../../lib/topicStatus.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
+import AgreementPicker from '../../components/AgreementPicker.jsx'
 
 export default function BukaBarengTopik() {
   const { topicId } = useParams()
@@ -17,6 +19,7 @@ export default function BukaBarengTopik() {
   const [loading, setLoading] = useState(true)
   const [pair, setPair] = useState({ mine: null, partner: null })
   const [revealed, setRevealed] = useState(false)
+  const [agreementStatus, setAgreementStatus] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -27,6 +30,22 @@ export default function BukaBarengTopik() {
     })
     return () => {
       cancelled = true
+    }
+  }, [couple.id, topicId])
+
+  useEffect(() => {
+    let cancelled = false
+    function loadStatus() {
+      getAllTopicStatuses(couple.id).then((map) => {
+        if (cancelled) return
+        setAgreementStatus(map.get(pairKey('topik', topicId))?.status ?? null)
+      })
+    }
+    loadStatus()
+    const unsubscribe = subscribeToTopicStatus(couple.id, loadStatus)
+    return () => {
+      cancelled = true
+      unsubscribe()
     }
   }, [couple.id, topicId])
 
@@ -105,6 +124,16 @@ export default function BukaBarengTopik() {
             <p className="mt-2 text-sm leading-relaxed text-ink">{pair.partner.answer}</p>
           </motion.div>
         </div>
+      )}
+
+      {revealed && (
+        <AgreementPicker
+          status={agreementStatus}
+          onSelect={(status) => {
+            setAgreementStatus(status)
+            setTopicStatus(couple.id, 'topik', topicId, status)
+          }}
+        />
       )}
 
       {revealed && (

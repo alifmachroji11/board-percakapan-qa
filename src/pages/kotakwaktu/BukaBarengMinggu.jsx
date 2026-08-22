@@ -3,9 +3,11 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Mail, MailOpen } from 'lucide-react'
 import { getWeeklyQuestion } from '../../data/weeklyQuestions.js'
-import { getEntryPair, markOpened } from '../../lib/journal.js'
+import { getEntryPair, markOpened, pairKey } from '../../lib/journal.js'
+import { getAllTopicStatuses, setTopicStatus, subscribeToTopicStatus } from '../../lib/topicStatus.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
+import AgreementPicker from '../../components/AgreementPicker.jsx'
 
 export default function BukaBarengMinggu() {
   const navigate = useNavigate()
@@ -22,6 +24,7 @@ export default function BukaBarengMinggu() {
   const [loading, setLoading] = useState(true)
   const [pair, setPair] = useState({ mine: null, partner: null })
   const [step, setStep] = useState('closed') // closed -> opening -> open
+  const [agreementStatus, setAgreementStatus] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -35,6 +38,22 @@ export default function BukaBarengMinggu() {
     })
     return () => {
       cancelled = true
+    }
+  }, [couple.id, week])
+
+  useEffect(() => {
+    let cancelled = false
+    function loadStatus() {
+      getAllTopicStatuses(couple.id).then((map) => {
+        if (cancelled) return
+        setAgreementStatus(map.get(pairKey('kotak-waktu', week))?.status ?? null)
+      })
+    }
+    loadStatus()
+    const unsubscribe = subscribeToTopicStatus(couple.id, loadStatus)
+    return () => {
+      cancelled = true
+      unsubscribe()
     }
   }, [couple.id, week])
 
@@ -126,6 +145,16 @@ export default function BukaBarengMinggu() {
             <p className="mt-2 text-sm leading-relaxed text-ink">{pair.partner.answer}</p>
           </motion.div>
         </div>
+      )}
+
+      {step === 'open' && (
+        <AgreementPicker
+          status={agreementStatus}
+          onSelect={(status) => {
+            setAgreementStatus(status)
+            setTopicStatus(couple.id, 'kotak-waktu', week, status)
+          }}
+        />
       )}
 
       {step === 'open' && (

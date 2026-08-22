@@ -9,14 +9,17 @@ import {
   pairKey,
   subscribeToCoupleJournal,
 } from '../lib/journal.js'
+import { getAllTopicStatuses, subscribeToTopicStatus } from '../lib/topicStatus.js'
 import { supabase } from '../lib/supabaseClient.js'
 import { useCouple } from '../context/CoupleContext.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
+import AgreementBadge from '../components/AgreementBadge.jsx'
 
 export default function Riwayat() {
   const { couple } = useCouple()
   const currentWeek = couple.current_week
   const [pairs, setPairs] = useState(new Map())
+  const [agreements, setAgreements] = useState(new Map())
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -38,6 +41,21 @@ export default function Riwayat() {
     }
   }, [couple.id])
 
+  useEffect(() => {
+    let cancelled = false
+    function loadStatuses() {
+      getAllTopicStatuses(couple.id).then((map) => {
+        if (!cancelled) setAgreements(map)
+      })
+    }
+    loadStatuses()
+    const unsubscribe = subscribeToTopicStatus(couple.id, loadStatuses)
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
+  }, [couple.id])
+
   if (loading) return null
 
   return (
@@ -52,6 +70,7 @@ export default function Riwayat() {
         <div className="flex flex-col gap-2">
           {TOPICS.map((topic) => {
             const status = deriveStatus(pairs.get(pairKey('topik', topic.id)))
+            const agreementStatus = agreements.get(pairKey('topik', topic.id))?.status
             const href =
               status === 'belum-dibahas'
                 ? `/app/topik/${topic.id}`
@@ -65,7 +84,10 @@ export default function Riwayat() {
                 className="flex items-center justify-between gap-3 rounded-xl bg-surface p-4 shadow-sm shadow-ink/5"
               >
                 <p className="text-sm font-semibold leading-snug text-ink">{topic.title}</p>
-                <StatusBadge status={status} />
+                <div className="flex shrink-0 flex-col items-end gap-1.5">
+                  <StatusBadge status={status} />
+                  {agreementStatus && <AgreementBadge status={agreementStatus} />}
+                </div>
               </Link>
             )
           })}
@@ -78,6 +100,7 @@ export default function Riwayat() {
           {WEEKLY_QUESTIONS.filter((q) => q.week <= currentWeek).map((q) => {
             const isPastWeek = q.week < currentWeek
             const status = deriveStatus(pairs.get(pairKey('kotak-waktu', q.week)), { isPastWeek })
+            const agreementStatus = agreements.get(pairKey('kotak-waktu', q.week))?.status
             // Cuma minggu yang jawabannya lengkap yang punya sesuatu buat dilihat —
             // minggu ini (belum lengkap) diarahkan ke alur normal, minggu lama yang
             // "dilewati" nggak punya isi jadi nggak usah bisa diklik.
@@ -94,7 +117,10 @@ export default function Riwayat() {
                   <p className="text-xs font-semibold text-soft-blue-deep">Minggu ke-{q.week}</p>
                   <p className="text-sm font-semibold leading-snug text-ink">{q.question}</p>
                 </div>
-                <StatusBadge status={status} />
+                <div className="flex shrink-0 flex-col items-end gap-1.5">
+                  <StatusBadge status={status} />
+                  {agreementStatus && <AgreementBadge status={agreementStatus} />}
+                </div>
               </>
             )
 

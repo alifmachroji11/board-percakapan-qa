@@ -8,14 +8,17 @@ import {
   pairKey,
   subscribeToCoupleJournal,
 } from '../../lib/journal.js'
+import { getAllTopicStatuses, subscribeToTopicStatus } from '../../lib/topicStatus.js'
 import { supabase } from '../../lib/supabaseClient.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import StatusBadge from '../../components/StatusBadge.jsx'
+import AgreementBadge from '../../components/AgreementBadge.jsx'
 
 export default function PilihFase() {
   const { couple } = useCouple()
   const [phase, setPhase] = useState(PHASES[0].id)
   const [pairs, setPairs] = useState(new Map())
+  const [agreements, setAgreements] = useState(new Map())
   const navigate = useNavigate()
   const topics = getTopicsByPhase(phase)
 
@@ -30,6 +33,21 @@ export default function PilihFase() {
     }
     load()
     const unsubscribe = subscribeToCoupleJournal(couple.id, load)
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
+  }, [couple.id])
+
+  useEffect(() => {
+    let cancelled = false
+    function loadStatuses() {
+      getAllTopicStatuses(couple.id).then((map) => {
+        if (!cancelled) setAgreements(map)
+      })
+    }
+    loadStatuses()
+    const unsubscribe = subscribeToTopicStatus(couple.id, loadStatuses)
     return () => {
       cancelled = true
       unsubscribe()
@@ -64,6 +82,7 @@ export default function PilihFase() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {topics.map((topic) => {
           const status = deriveStatus(pairs.get(pairKey('topik', topic.id)))
+          const agreementStatus = agreements.get(pairKey('topik', topic.id))?.status
           return (
             <button
               key={topic.id}
@@ -75,6 +94,7 @@ export default function PilihFase() {
               </span>
               <p className="text-sm font-semibold leading-snug text-ink">{topic.title}</p>
               {status !== 'belum-dibahas' && <StatusBadge status={status} />}
+              {agreementStatus && <AgreementBadge status={agreementStatus} />}
             </button>
           )
         })}
