@@ -1,21 +1,38 @@
 import { CheckCircle2, MessagesSquare, SkipForward } from 'lucide-react'
 
-const OPTIONS = [
-  { value: 'sepakat', label: 'Sepakat, yuk mulai jawab', icon: CheckCircle2, activeClass: 'bg-sage text-white' },
-  { value: 'perlu-dibahas', label: 'Ngobrol dulu sebelum jawab', icon: MessagesSquare, activeClass: 'bg-mustard text-white' },
-  { value: 'lewati-dulu', label: 'Lewati dulu', icon: SkipForward, activeClass: 'bg-dusty-pink text-white' },
-]
+const VARIANTS = {
+  after: {
+    prompt: 'Gimana hasil obrolan kalian soal ini?',
+    options: [
+      { value: 'sepakat', label: 'Sudah sepakat', icon: CheckCircle2, activeClass: 'bg-sage text-white' },
+      { value: 'perlu-dibahas', label: 'Perlu dibahas lagi', icon: MessagesSquare, activeClass: 'bg-mustard text-white' },
+      { value: 'lewati-dulu', label: 'Lewati dulu', icon: SkipForward, activeClass: 'bg-dusty-pink text-white' },
+    ],
+  },
+  before: {
+    prompt: 'Sebelum mulai nulis, kalian gimana?',
+    options: [
+      { value: 'sepakat', label: 'Sepakat, yuk mulai jawab', icon: CheckCircle2, activeClass: 'bg-sage text-white' },
+      { value: 'perlu-dibahas', label: 'Ngobrol dulu sebelum jawab', icon: MessagesSquare, activeClass: 'bg-mustard text-white' },
+      { value: 'lewati-dulu', label: 'Lewati dulu', icon: SkipForward, activeClass: 'bg-dusty-pink text-white' },
+    ],
+  },
+}
 
-// Dipakai SEBELUM nulis jawaban (JurnalTopik) — pasangan sepakat dulu mau
-// mulai bahas pertanyaan ini apa nggak, baru textarea jawaban kebuka kalau
-// statusnya 'sepakat'. Siapa aja di couple boleh pilih/ubah, dan realtime
-// bikin pasangan yang lagi liat bareng langsung ikut lihat perubahannya.
-export default function AgreementPicker({ status, onSelect }) {
+// `variant`: 'after' (default) = dipakai di layar "buka bareng" Kotak Waktu
+// — setelah pasangan baca jawaban satu sama lain, mereka nandain hasil
+// obrolannya (makna asli komponen ini). 'before' = dipakai SEBELUM nulis
+// jawaban di JurnalTopik — pasangan sepakat dulu mau mulai bahas pertanyaan
+// ini apa nggak, baru textarea jawaban kebuka kalau statusnya 'sepakat'.
+// Siapa aja di couple boleh pilih/ubah, dan realtime bikin pasangan yang
+// lagi liat bareng langsung ikut lihat perubahannya.
+export default function AgreementPicker({ status, onSelect, variant = 'after' }) {
+  const { prompt, options } = VARIANTS[variant]
   return (
     <div className="flex flex-col gap-3 rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5">
-      <p className="text-sm font-semibold text-ink">Sebelum mulai nulis, kalian gimana?</p>
+      <p className="text-sm font-semibold text-ink">{prompt}</p>
       <div className="flex flex-wrap gap-2">
-        {OPTIONS.map(({ value, label, icon: Icon, activeClass }) => {
+        {options.map(({ value, label, icon: Icon, activeClass }) => {
           const active = status === value
           return (
             <button

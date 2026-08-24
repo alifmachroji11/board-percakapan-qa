@@ -97,7 +97,7 @@ export default function PilihFase() {
               </span>
               <p className="text-sm font-semibold leading-snug text-ink">{topic.title}</p>
               {doneCount > 0 && <StatusBadge status="sudah-dibuka" label={`${doneCount}/${total} pertanyaan selesai`} />}
-              {pendingAgreement && <AgreementBadge status={activeAgreementStatus} />}
+              {pendingAgreement && <AgreementBadge status={activeAgreementStatus} variant="before" />}
             </button>
           )
         })}

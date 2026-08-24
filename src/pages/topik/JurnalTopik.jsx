@@ -142,7 +142,7 @@ export default function JurnalTopik() {
         <>
           {showTextarea ? (
             <div className="flex items-center justify-between gap-3">
-              <AgreementBadge status={agreementStatus} />
+              <AgreementBadge status={agreementStatus} variant="before" />
               <button
                 onClick={() => setEditingStatus(true)}
                 className="text-xs font-semibold text-ink-soft hover:text-ink"
@@ -153,6 +153,7 @@ export default function JurnalTopik() {
           ) : (
             <AgreementPicker
               status={agreementStatus}
+              variant="before"
               onSelect={(status) => {
                 setEditingStatus(false)
                 setTopicStatus(couple.id, 'topik', refId, status)
