@@ -1,19 +1,19 @@
 import { CheckCircle2, MessagesSquare, SkipForward } from 'lucide-react'
 
 const OPTIONS = [
-  { value: 'sepakat', label: 'Sudah sepakat', icon: CheckCircle2, activeClass: 'bg-sage text-white' },
-  { value: 'perlu-dibahas', label: 'Perlu dibahas lagi', icon: MessagesSquare, activeClass: 'bg-mustard text-white' },
+  { value: 'sepakat', label: 'Sepakat, yuk mulai jawab', icon: CheckCircle2, activeClass: 'bg-sage text-white' },
+  { value: 'perlu-dibahas', label: 'Ngobrol dulu sebelum jawab', icon: MessagesSquare, activeClass: 'bg-mustard text-white' },
   { value: 'lewati-dulu', label: 'Lewati dulu', icon: SkipForward, activeClass: 'bg-dusty-pink text-white' },
 ]
 
-// Dipakai di layar "buka bareng" — setelah pasangan baca jawaban satu sama
-// lain, mereka nandain sendiri hasil obrolannya. Siapa aja di couple boleh
-// pilih/ubah, dan realtime bikin pasangan yang lagi liat bareng langsung
-// ikut lihat perubahannya.
+// Dipakai SEBELUM nulis jawaban (JurnalTopik) — pasangan sepakat dulu mau
+// mulai bahas pertanyaan ini apa nggak, baru textarea jawaban kebuka kalau
+// statusnya 'sepakat'. Siapa aja di couple boleh pilih/ubah, dan realtime
+// bikin pasangan yang lagi liat bareng langsung ikut lihat perubahannya.
 export default function AgreementPicker({ status, onSelect }) {
   return (
     <div className="flex flex-col gap-3 rounded-2xl bg-surface p-4 shadow-sm shadow-ink/5">
-      <p className="text-sm font-semibold text-ink">Gimana hasil obrolan kalian soal ini?</p>
+      <p className="text-sm font-semibold text-ink">Sebelum mulai nulis, kalian gimana?</p>
       <div className="flex flex-wrap gap-2">
         {OPTIONS.map(({ value, label, icon: Icon, activeClass }) => {
           const active = status === value

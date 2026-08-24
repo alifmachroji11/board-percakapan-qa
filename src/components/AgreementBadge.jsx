@@ -1,9 +1,9 @@
 import { CheckCircle2, MessagesSquare, SkipForward } from 'lucide-react'
 
 const CONFIG = {
-  sepakat: { label: 'Sudah sepakat', icon: CheckCircle2, className: 'bg-sage/25 text-sage-deep' },
+  sepakat: { label: 'Sepakat mulai jawab', icon: CheckCircle2, className: 'bg-sage/25 text-sage-deep' },
   'perlu-dibahas': {
-    label: 'Perlu dibahas lagi',
+    label: 'Ngobrol dulu sebelum jawab',
     icon: MessagesSquare,
     className: 'bg-mustard/25 text-mustard-deep',
   },

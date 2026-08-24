@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Heart, ArrowLeft } from 'lucide-react'
-import { getTopicById } from '../../data/topics.js'
-import { getEntryPair, markOpened, pairKey } from '../../lib/journal.js'
-import { getAllTopicStatuses, setTopicStatus, subscribeToTopicStatus } from '../../lib/topicStatus.js'
+import { Heart, ArrowLeft, ArrowRight } from 'lucide-react'
+import { getTopicById, getQuestionRefId, getTopicProgress } from '../../data/topics.js'
+import {
+  getAllEntries,
+  groupEntryPairs,
+  deriveStatus,
+  markOpened,
+  subscribeToCoupleJournal,
+  pairKey,
+} from '../../lib/journal.js'
+import { supabase } from '../../lib/supabaseClient.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
-import AgreementPicker from '../../components/AgreementPicker.jsx'
 
 export default function BukaBarengTopik() {
   const { topicId } = useParams()
@@ -17,50 +23,44 @@ export default function BukaBarengTopik() {
   const partnerName = partner?.display_name || 'pasanganmu'
 
   const [loading, setLoading] = useState(true)
-  const [pair, setPair] = useState({ mine: null, partner: null })
+  const [pairsMap, setPairsMap] = useState(new Map())
   const [revealed, setRevealed] = useState(false)
-  const [agreementStatus, setAgreementStatus] = useState(null)
 
   useEffect(() => {
     let cancelled = false
-    getEntryPair(couple.id, 'topik', topicId).then((result) => {
+    async function load() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const entries = await getAllEntries(couple.id)
       if (cancelled) return
-      setPair(result)
+      setPairsMap(groupEntryPairs(entries, user.id))
       setLoading(false)
-    })
-    return () => {
-      cancelled = true
     }
-  }, [couple.id, topicId])
-
-  useEffect(() => {
-    let cancelled = false
-    function loadStatus() {
-      getAllTopicStatuses(couple.id).then((map) => {
-        if (cancelled) return
-        setAgreementStatus(map.get(pairKey('topik', topicId))?.status ?? null)
-      })
-    }
-    loadStatus()
-    const unsubscribe = subscribeToTopicStatus(couple.id, loadStatus)
+    load()
+    const unsubscribe = subscribeToCoupleJournal(couple.id, load)
     return () => {
       cancelled = true
       unsubscribe()
     }
-  }, [couple.id, topicId])
+  }, [couple.id])
+
+  const { activeIndex, total } = topic ? getTopicProgress(topic, pairsMap, deriveStatus) : { activeIndex: 0, total: 0 }
+  const refId = topic ? getQuestionRefId(topic, activeIndex) : null
+  const pair = refId ? pairsMap.get(pairKey('topik', refId)) ?? { mine: null, partner: null } : { mine: null, partner: null }
 
   useEffect(() => {
     if (!pair.mine || !pair.partner) return
     const timer = setTimeout(() => {
       setRevealed(true)
-      markOpened(couple.id, 'topik', topicId)
+      markOpened(couple.id, 'topik', refId)
     }, 1100)
     return () => clearTimeout(timer)
-  }, [pair, couple.id, topicId])
+  }, [pair.mine, pair.partner, refId, couple.id])
 
   if (loading) return null
 
-  if (!topic || !pair.mine || !pair.partner) {
+  if (!topic || activeIndex >= total || !pair.mine || !pair.partner) {
     return (
       <div className="text-center text-ink-soft">
         Belum ada jawaban lengkap untuk dibuka.{' '}
@@ -70,6 +70,8 @@ export default function BukaBarengTopik() {
       </div>
     )
   }
+
+  const hasNext = activeIndex + 1 < total
 
   return (
     <div className="flex flex-col gap-6">
@@ -81,8 +83,10 @@ export default function BukaBarengTopik() {
       </button>
 
       <div className="text-center">
-        <p className="text-xs font-bold uppercase tracking-wide text-terracotta-deep">Buka bareng</p>
-        <h1 className="mt-1 text-xl font-extrabold leading-snug text-ink">{topic.title}</h1>
+        <p className="text-xs font-bold uppercase tracking-wide text-terracotta-deep">
+          Buka bareng · Pertanyaan {activeIndex + 1} dari {total}
+        </p>
+        <h1 className="mt-1 text-xl font-extrabold leading-snug text-ink">{topic.questions[activeIndex]}</h1>
       </div>
 
       {!revealed ? (
@@ -126,17 +130,13 @@ export default function BukaBarengTopik() {
         </div>
       )}
 
-      {revealed && (
-        <AgreementPicker
-          status={agreementStatus}
-          onSelect={(status) => {
-            setAgreementStatus(status)
-            setTopicStatus(couple.id, 'topik', topicId, status)
-          }}
-        />
+      {revealed && hasNext && (
+        <PillButton onClick={() => navigate(`/app/topik/${topicId}/jurnal`)} className="w-full">
+          <ArrowRight size={18} /> Lanjut ke pertanyaan berikutnya
+        </PillButton>
       )}
 
-      {revealed && (
+      {revealed && !hasNext && (
         <PillButton as={Link} to="/app/topik" variant="secondary" className="w-full">
           Selesai, lihat topik lain
         </PillButton>

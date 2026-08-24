@@ -21,6 +21,11 @@ export const TOPICS = [
     category: 'Keuangan',
     phases: ['pra-nikah', 'pengantin-baru'],
     title: 'Gimana kita atur uang kalau salah satu masih kirim ke orang tua?',
+    questions: [
+      'Gimana kita atur uang kalau salah satu masih kirim ke orang tua?',
+      'Kalau nanti kondisi keuangan lagi ketat, kiriman ke orang tua didahulukan atau kebutuhan rumah tangga kita dulu?',
+      'Perlu gak kita sepakatin nominal atau persentase pasti, biar gak jadi "sesuka hati" tiap bulan?',
+    ],
     videoBlurb:
       'Konteks singkat soal kenapa topik ini sering ditunda, plus 2-3 contoh kalimat pembuka yang nggak terasa menuduh.',
     openerExample:
@@ -48,6 +53,11 @@ export const TOPICS = [
     category: 'Keluarga besar',
     phases: ['pra-nikah', 'pengantin-baru'],
     title: 'Seberapa banyak keterlibatan mertua yang kita berdua nyaman?',
+    questions: [
+      'Seberapa banyak keterlibatan mertua yang kita berdua nyaman?',
+      'Kalau mertua kasih saran yang kita berdua gak sepakat, gimana cara kita nolaknya bareng-bareng?',
+      'Ada topik rumah tangga yang menurut kita tetap privat, gak perlu didengar orang tua/mertua?',
+    ],
     videoBlurb:
       'Bahas batasan yang sehat antara "menghormati orang tua" dan "keputusan tetap di tangan kita berdua".',
     openerExample:
@@ -75,6 +85,11 @@ export const TOPICS = [
     category: 'Anak & keluarga',
     phases: ['pengantin-baru', 'lama-menikah'],
     title: 'Siapa yang pegang keputusan besar soal anak nanti?',
+    questions: [
+      'Siapa yang pegang keputusan besar soal anak nanti?',
+      'Kalau kita beda pendapat soal sekolah/agama/gaya asuh anak, siapa yang mutusin kalau deadlock?',
+      'Gimana kita mau ngelibatin (atau enggak) orang tua kita dalam pengasuhan anak nanti?',
+    ],
     videoBlurb:
       'Bukan soal siapa "menang", tapi gimana kita berdua tetap merasa didengar saat pendapat beda soal parenting.',
     openerExample:
@@ -102,6 +117,11 @@ export const TOPICS = [
     category: 'Karier',
     phases: ['pengantin-baru', 'lama-menikah'],
     title: 'Kalau salah satu harus resign demi keluarga, gimana kita mutusinnya?',
+    questions: [
+      'Kalau salah satu harus resign demi keluarga, gimana kita mutusinnya?',
+      'Kalau itu terjadi, gimana kita jaga biar yang resign tetap ngerasa dihargai kontribusinya?',
+      'Ada rencana buat balik kerja lagi nanti, atau itu keputusan permanen?',
+    ],
     videoBlurb:
       'Contoh kalimat buat bahas skenario ini sebelum jadi keputusan mendadak di tengah situasi genting.',
     openerExample:
@@ -129,6 +149,11 @@ export const TOPICS = [
     category: 'Komunikasi',
     phases: ['pra-nikah', 'pengantin-baru', 'lama-menikah'],
     title: 'Cara kamu marah itu kayak gimana, dan gimana aku sebaiknya nanggepin?',
+    questions: [
+      'Cara kamu marah itu kayak gimana, dan gimana aku sebaiknya nanggepin?',
+      'Ada kata-kata atau tindakan yang menurut kamu gak boleh dipakai pas lagi berantem, apa aja?',
+      'Gimana cara kita "baikan" setelah berantem — perlu waktu sendiri dulu atau langsung ngobrol?',
+    ],
     videoBlurb:
       'Mengenali pola marah masing-masing supaya konflik kecil nggak berubah jadi bola salju.',
     openerExample:
@@ -156,6 +181,11 @@ export const TOPICS = [
     category: 'Keuangan',
     phases: ['pra-nikah', 'pengantin-baru'],
     title: 'Kalau nanti rezeki kita gak sama besar, gimana kita mandang itu?',
+    questions: [
+      'Kalau nanti rezeki kita gak sama besar, gimana kita mandang itu?',
+      'Kalau salah satu penghasilannya jauh lebih besar, itu ngubah siapa yang mutusin soal keuangan gak?',
+      'Gimana kita jaga biar gak ada yang ngerasa "dihitung-hitung" soal siapa nyumbang berapa?',
+    ],
     videoBlurb:
       'Ngobrolin ekspektasi soal kontribusi finansial sebelum jadi sumber gengsi diam-diam.',
     openerExample:
@@ -183,6 +213,11 @@ export const TOPICS = [
     category: 'Keuangan',
     phases: ['pengantin-baru', 'lama-menikah'],
     title: 'Gimana kita nentuin siapa yang pegang kendali keuangan bulanan?',
+    questions: [
+      'Gimana kita nentuin siapa yang pegang kendali keuangan bulanan?',
+      'Kita mau rekening digabung, dipisah, atau kombinasi (ada rekening bersama + pribadi)?',
+      'Siapa yang catat pengeluaran, dan seberapa sering kita review bareng?',
+    ],
     videoBlurb:
       'Bahas model pengelolaan keuangan rumah tangga (satu pintu, rekening bersama, atau split) yang paling cocok buat kalian berdua.',
     openerExample:
@@ -210,6 +245,11 @@ export const TOPICS = [
     category: 'Keluarga besar',
     phases: ['pra-nikah', 'pengantin-baru'],
     title: 'Kita mau tinggal deket orang tua siapa, atau pisah rumah?',
+    questions: [
+      'Kita mau tinggal deket orang tua siapa, atau pisah rumah?',
+      'Kalau nanti ada yang sakit atau butuh dijagain, gimana kita bagi tanggung jawabnya kalau tinggal jauh?',
+      'Ada tekanan dari salah satu keluarga soal ini, dan gimana kita hadapinnya bareng?',
+    ],
     videoBlurb:
       'Pertimbangan yang sering luput: bukan cuma soal jarak, tapi ekspektasi keterlibatan sehari-hari dari masing-masing keluarga.',
     openerExample:
@@ -237,6 +277,11 @@ export const TOPICS = [
     category: 'Rumah tangga',
     phases: ['pengantin-baru', 'lama-menikah'],
     title: 'Gimana kita bagi tugas rumah tangga biar adil buat kita berdua?',
+    questions: [
+      'Gimana kita bagi tugas rumah tangga biar adil buat kita berdua?',
+      'Kalau salah satu lagi capek/sibuk banget, gimana tugas yang biasanya dia pegang di-cover?',
+      'Perlu bantuan ART/laundry buat sebagian tugas, atau kita berdua aja yang pegang semua?',
+    ],
     videoBlurb:
       'Ngobrolin beban kerja domestik yang sering nggak keliatan, biar nggak ada yang diam-diam ngerasa lebih capek.',
     openerExample:
@@ -264,6 +309,11 @@ export const TOPICS = [
     category: 'Keintiman',
     phases: ['lama-menikah'],
     title: 'Kalau salah satu ngerasa hubungan kita mulai monoton, gimana cara ngomonginnya?',
+    questions: [
+      'Kalau salah satu ngerasa hubungan kita mulai monoton, gimana cara ngomonginnya?',
+      'Hal kecil apa yang dulu sering kita lakuin berdua tapi sekarang jarang, dan pengen dihidupin lagi?',
+      'Gimana kita bikin waktu berdua tetap ada di tengah kesibukan, tanpa nunggu "nanti kalau sempat"?',
+    ],
     videoBlurb:
       'Cara buka obrolan soal rasa "jenuh" tanpa bikin pasangan defensif atau ngerasa disalahkan.',
     openerExample:
@@ -291,6 +341,11 @@ export const TOPICS = [
     category: 'Anak & keluarga',
     phases: ['pra-nikah', 'pengantin-baru'],
     title: 'Berapa anak yang kita berdua pengen, dan kapan waktunya?',
+    questions: [
+      'Berapa anak yang kita berdua pengen, dan kapan waktunya?',
+      'Kalau ternyata rencana itu meleset (lebih cepat/lambat dari harapan), gimana kita hadapinnya?',
+      'Kesiapan apa aja (finansial, mental, dukungan keluarga) yang menurut kita perlu ada dulu sebelum punya anak?',
+    ],
     videoBlurb:
       'Menyamakan gambaran jumlah & waktu punya anak sebelum jadi asumsi yang ternyata beda jauh.',
     openerExample:
@@ -321,4 +376,32 @@ export function getTopicById(id) {
 
 export function getTopicsByPhase(phaseId) {
   return TOPICS.filter((t) => t.phases.includes(phaseId))
+}
+
+// ref_id pertanyaan ke-`index` dalam satu topik. Index 0 (pertanyaan
+// pertama) TETAP pakai `topic.id` polos tanpa suffix — ini demi kompatibel
+// sama data lama couple yang udah jawab sebelum topik punya banyak
+// pertanyaan (journal_entries/topic_status row lama gak boleh jadi orphan).
+export function getQuestionRefId(topic, index) {
+  return index === 0 ? topic.id : `${topic.id}:${index}`
+}
+
+// Hitung progres satu topik dari peta entries ("type:refId" -> {mine, partner})
+// hasil groupEntryPairs/getAllTopicStatuses-nya journal.js. `doneCount` =
+// jumlah pertanyaan yang statusnya udah 'sudah-dibuka', `activeIndex` =
+// index pertama yang belum selesai (dipakai buat nentuin pertanyaan mana
+// yang lagi aktif di JurnalTopik/BukaBarengTopik).
+export function getTopicProgress(topic, pairsMap, deriveStatus) {
+  let doneCount = 0
+  let activeIndex = topic.questions.length
+  for (let i = 0; i < topic.questions.length; i++) {
+    const refId = getQuestionRefId(topic, i)
+    const status = deriveStatus(pairsMap.get(`topik:${refId}`))
+    if (status === 'sudah-dibuka') {
+      doneCount++
+    } else if (activeIndex === topic.questions.length) {
+      activeIndex = i
+    }
+  }
+  return { doneCount, total: topic.questions.length, activeIndex }
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PHASES, getTopicsByPhase } from '../../data/topics.js'
+import { PHASES, getTopicsByPhase, getQuestionRefId, getTopicProgress } from '../../data/topics.js'
 import {
   getAllEntries,
   groupEntryPairs,
@@ -81,8 +81,11 @@ export default function PilihFase() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {topics.map((topic) => {
-          const status = deriveStatus(pairs.get(pairKey('topik', topic.id)))
-          const agreementStatus = agreements.get(pairKey('topik', topic.id))?.status
+          const { doneCount, total, activeIndex } = getTopicProgress(topic, pairs, deriveStatus)
+          const activeRefId = getQuestionRefId(topic, activeIndex)
+          const activeAgreementStatus = agreements.get(pairKey('topik', activeRefId))?.status
+          const pendingAgreement =
+            doneCount < total && (activeAgreementStatus === 'perlu-dibahas' || activeAgreementStatus === 'lewati-dulu')
           return (
             <button
               key={topic.id}
@@ -93,8 +96,8 @@ export default function PilihFase() {
                 {topic.category}
               </span>
               <p className="text-sm font-semibold leading-snug text-ink">{topic.title}</p>
-              {status !== 'belum-dibahas' && <StatusBadge status={status} />}
-              {agreementStatus && <AgreementBadge status={agreementStatus} />}
+              {doneCount > 0 && <StatusBadge status="sudah-dibuka" label={`${doneCount}/${total} pertanyaan selesai`} />}
+              {pendingAgreement && <AgreementBadge status={activeAgreementStatus} />}
             </button>
           )
         })}
