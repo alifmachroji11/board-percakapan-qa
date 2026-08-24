@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { MessageCircleHeart, Clock, History, UserCircle } from 'lucide-react'
 import PageTransition from '../components/PageTransition.jsx'
-import SplashScreen from '../components/SplashScreen.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import { LogoIcon } from '../components/Logo.jsx'
 import WaitingForPartner from '../components/WaitingForPartner.jsx'
@@ -22,7 +21,6 @@ const TABS = [
 export default function AppLayout() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [leavingToLanding, setLeavingToLanding] = useState(false)
   const [coupleState, setCoupleState] = useState(null) // { couple, me, partner }
   const [checking, setChecking] = useState(true)
 
@@ -85,13 +83,13 @@ export default function AppLayout() {
       <div className="min-h-dvh flex flex-col bg-cream">
         <header className="sticky top-0 z-20 border-b border-cream-deep/70 bg-cream/90 backdrop-blur">
           <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3">
-            <button
-              onClick={() => setLeavingToLanding(true)}
+            <Link
+              to="/app"
               className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-terracotta-deep"
             >
               <LogoIcon size={22} className="text-terracotta" />
               Obrolin
-            </button>
+            </Link>
             <div className="flex items-center gap-1">
               <nav className="flex items-center gap-1">
                 {TABS.map(({ to, label, icon: Icon }) => (
@@ -135,9 +133,6 @@ export default function AppLayout() {
             </PageTransition>
           </AnimatePresence>
         </main>
-
-        {/* Transisi logo singkat sebelum balik ke landing page */}
-        {leavingToLanding && <SplashScreen duration={650} onFinish={() => navigate('/')} />}
       </div>
     </CoupleProvider>
   )
