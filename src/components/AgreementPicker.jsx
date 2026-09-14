@@ -1,4 +1,4 @@
-import { CheckCircle2, MessagesSquare, SkipForward } from 'lucide-react'
+import { CheckCircle2, MessagesSquare, SkipForward, HelpCircle } from 'lucide-react'
 
 const VARIANTS = {
   after: {
@@ -17,6 +17,19 @@ const VARIANTS = {
       { value: 'lewati-dulu', label: 'Lewati dulu', icon: SkipForward, activeClass: 'bg-dusty-pink text-white' },
     ],
   },
+  'before-kotak-waktu': {
+    prompt: 'Sebelum mulai nulis, kalian gimana?',
+    options: [
+      { value: 'sepakat', label: 'Sepakat, yuk mulai jawab', icon: CheckCircle2, activeClass: 'bg-sage text-white' },
+      { value: 'perlu-dibahas', label: 'Ngobrol dulu sebelum jawab', icon: MessagesSquare, activeClass: 'bg-mustard text-white' },
+      {
+        value: 'perlu-dipahami-kembali',
+        label: 'Perlu dipahami lagi pertanyaannya',
+        icon: HelpCircle,
+        activeClass: 'bg-soft-blue text-white',
+      },
+    ],
+  },
 }
 
 // `variant`: 'after' (default) = dipakai di layar "buka bareng" Kotak Waktu
@@ -24,6 +37,10 @@ const VARIANTS = {
 // obrolannya (makna asli komponen ini). 'before' = dipakai SEBELUM nulis
 // jawaban di JurnalTopik — pasangan sepakat dulu mau mulai bahas pertanyaan
 // ini apa nggak, baru textarea jawaban kebuka kalau statusnya 'sepakat'.
+// 'before-kotak-waktu' = sama gate-nya, tapi buat Kotak Waktu — opsi
+// ketiganya beda: "perlu dipahami lagi pertanyaannya" (bukan "lewati dulu"),
+// karena pertanyaan mingguannya reflektif & kadang perlu diklarifikasi dulu
+// maknanya, bukan sekadar mau di-skip.
 // Siapa aja di couple boleh pilih/ubah, dan realtime bikin pasangan yang
 // lagi liat bareng langsung ikut lihat perubahannya.
 export default function AgreementPicker({ status, onSelect, variant = 'after' }) {

@@ -6,7 +6,7 @@ import { pairKey } from './journal.js'
 // progres baca (siap dibuka/sudah dibuka), ini nilainya hasil obrolan
 // mereka. Satu baris per (couple, type, ref_id), siapa aja di couple boleh
 // nulis/ubah — bukan per-penulis kayak journal_entries.
-export const AGREEMENT_STATUSES = ['sepakat', 'perlu-dibahas', 'lewati-dulu']
+export const AGREEMENT_STATUSES = ['sepakat', 'perlu-dibahas', 'lewati-dulu', 'perlu-dipahami-kembali']
 
 export async function getAllTopicStatuses(coupleId) {
   const { data, error } = await supabase

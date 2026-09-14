@@ -1,4 +1,4 @@
-import { CheckCircle2, MessagesSquare, SkipForward } from 'lucide-react'
+import { CheckCircle2, MessagesSquare, SkipForward, HelpCircle } from 'lucide-react'
 
 const CONFIG = {
   after: {
@@ -9,6 +9,11 @@ const CONFIG = {
       className: 'bg-mustard/25 text-mustard-deep',
     },
     'lewati-dulu': { label: 'Dilewati dulu', icon: SkipForward, className: 'bg-dusty-pink/25 text-dusty-pink-deep' },
+    'perlu-dipahami-kembali': {
+      label: 'Perlu dipahami lagi',
+      icon: HelpCircle,
+      className: 'bg-soft-blue/25 text-soft-blue-deep',
+    },
   },
   before: {
     sepakat: { label: 'Sepakat mulai jawab', icon: CheckCircle2, className: 'bg-sage/25 text-sage-deep' },
@@ -18,6 +23,11 @@ const CONFIG = {
       className: 'bg-mustard/25 text-mustard-deep',
     },
     'lewati-dulu': { label: 'Dilewati dulu', icon: SkipForward, className: 'bg-dusty-pink/25 text-dusty-pink-deep' },
+    'perlu-dipahami-kembali': {
+      label: 'Perlu dipahami lagi',
+      icon: HelpCircle,
+      className: 'bg-soft-blue/25 text-soft-blue-deep',
+    },
   },
 }
 

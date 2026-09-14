@@ -1,8 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Mail, Lock } from 'lucide-react'
-import { WEEKLY_QUESTIONS, getWeeklyQuestion } from '../../data/weeklyQuestions.js'
-import { getEntryPair, deriveStatus, subscribeToCoupleJournal } from '../../lib/journal.js'
+import { Mail, Lock, Share2, History } from 'lucide-react'
+import { WEEKLY_QUESTIONS, getWeeklyQuestion, buildWhatsAppShareUrl } from '../../data/weeklyQuestions.js'
+import {
+  getAllEntries,
+  groupEntryPairs,
+  getEntryPair,
+  deriveStatus,
+  pairKey,
+  subscribeToCoupleJournal,
+} from '../../lib/journal.js'
+import { supabase } from '../../lib/supabaseClient.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
 import StatusBadge from '../../components/StatusBadge.jsx'
@@ -16,6 +24,7 @@ export default function PertanyaanMinggu() {
 
   const [loading, setLoading] = useState(true)
   const [pair, setPair] = useState({ mine: null, partner: null })
+  const [missedWeeks, setMissedWeeks] = useState([])
 
   useEffect(() => {
     let cancelled = false
@@ -33,6 +42,31 @@ export default function PertanyaanMinggu() {
     }
   }, [couple.id, week])
 
+  // Cari minggu-minggu sebelumnya yang belum kamu jawab, biar ada jalan
+  // buat balik lagi ke sana — bukan cuma nyangkut nunggu minggu berjalan.
+  useEffect(() => {
+    let cancelled = false
+    async function loadMissed() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const entries = await getAllEntries(couple.id)
+      if (cancelled) return
+      const pairs = groupEntryPairs(entries, user.id)
+      const missed = WEEKLY_QUESTIONS.filter((q) => q.week < week).filter((q) => {
+        const p = pairs.get(pairKey('kotak-waktu', q.week))
+        return !p?.mine
+      })
+      setMissedWeeks(missed)
+    }
+    loadMissed()
+    const unsubscribe = subscribeToCoupleJournal(couple.id, loadMissed)
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
+  }, [couple.id, week])
+
   if (loading) return null
 
   const status = deriveStatus(pair)
@@ -44,6 +78,16 @@ export default function PertanyaanMinggu() {
         <p className="mt-1 text-sm text-ink-soft">Minggu ke-{week} dari {WEEKLY_QUESTIONS.length}</p>
       </div>
 
+      {missedWeeks.length > 0 && (
+        <Link
+          to="/app/riwayat"
+          className="flex items-center gap-3 rounded-2xl bg-mustard/15 p-4 text-sm text-mustard-deep"
+        >
+          <History size={18} className="shrink-0" />
+          Ada {missedWeeks.length} pertanyaan minggu lalu yang belum kamu jawab. Lihat di riwayat.
+        </Link>
+      )}
+
       {/* Kartu "kapsul" pertanyaan minggu ini */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-soft-blue to-soft-blue-deep p-6 text-white shadow-md">
         <Mail size={22} className="opacity-80" />
@@ -51,6 +95,14 @@ export default function PertanyaanMinggu() {
           Pertanyaan minggu ini
         </p>
         <p className="mt-2 text-lg font-bold leading-snug">{question.question}</p>
+        <a
+          href={buildWhatsAppShareUrl(week, question.question)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white/85 hover:text-white hover:underline"
+        >
+          <Share2 size={14} /> Share ke WhatsApp
+        </a>
         <div className="mt-5">
           <StatusBadge
             status={status}

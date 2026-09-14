@@ -53,3 +53,12 @@ export const WEEKLY_QUESTIONS = [
 export function getWeeklyQuestion(week) {
   return WEEKLY_QUESTIONS.find((q) => q.week === week) ?? null
 }
+
+// Link wa.me tanpa nomor tujuan — biar user milih sendiri mau kirim ke
+// obrolan mana di WhatsApp-nya (biasanya ke pasangan).
+export function buildWhatsAppShareUrl(week, question) {
+  const text =
+    `Kotak Waktu minggu ke-${week} dari Obrolin:\n\n"${question}"\n\n` +
+    'Yuk kita jawab masing-masing dulu, baru kita buka bareng jawabannya di aplikasi.'
+  return `https://wa.me/?text=${encodeURIComponent(text)}`
+}

@@ -101,15 +101,15 @@ export default function Riwayat() {
             const isPastWeek = q.week < currentWeek
             const status = deriveStatus(pairs.get(pairKey('kotak-waktu', q.week)), { isPastWeek })
             const agreementStatus = agreements.get(pairKey('kotak-waktu', q.week))?.status
-            // Cuma minggu yang jawabannya lengkap yang punya sesuatu buat dilihat —
-            // minggu ini (belum lengkap) diarahkan ke alur normal, minggu lama yang
-            // "dilewati" nggak punya isi jadi nggak usah bisa diklik.
+            // Minggu yang jawabannya lengkap dibuka bareng; minggu ini (belum
+            // lengkap) diarahkan ke alur normal; minggu lama yang kelewat/belum
+            // lengkap tetap bisa diklik buat nyusul jawab — bukan jalan buntu.
             const href =
               status === 'siap-dibuka' || status === 'sudah-dibuka'
                 ? `/app/kotak-waktu/buka-bareng/${q.week}`
                 : !isPastWeek
                   ? '/app/kotak-waktu'
-                  : null
+                  : `/app/kotak-waktu/jawab/${q.week}`
 
             const content = (
               <>
@@ -124,7 +124,7 @@ export default function Riwayat() {
               </>
             )
 
-            return href ? (
+            return (
               <Link
                 key={q.week}
                 to={href}
@@ -132,13 +132,6 @@ export default function Riwayat() {
               >
                 {content}
               </Link>
-            ) : (
-              <div
-                key={q.week}
-                className="flex items-center justify-between gap-3 rounded-xl bg-surface/60 p-4 opacity-70"
-              >
-                {content}
-              </div>
             )
           })}
         </div>

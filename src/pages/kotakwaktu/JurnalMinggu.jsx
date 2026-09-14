@@ -1,25 +1,33 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Lock, Sparkles } from 'lucide-react'
-import { getWeeklyQuestion } from '../../data/weeklyQuestions.js'
+import { useNavigate, useParams } from 'react-router-dom'
+import { ArrowLeft, Lock, Sparkles, Share2 } from 'lucide-react'
+import { getWeeklyQuestion, buildWhatsAppShareUrl } from '../../data/weeklyQuestions.js'
 import { getEntryPair, submitAnswer, subscribeToCoupleJournal, pairKey } from '../../lib/journal.js'
 import { getAllTopicStatuses, setTopicStatus, subscribeToTopicStatus } from '../../lib/topicStatus.js'
 import { useCouple } from '../../context/CoupleContext.jsx'
 import PillButton from '../../components/PillButton.jsx'
 import AgreementBadge from '../../components/AgreementBadge.jsx'
+import AgreementPicker from '../../components/AgreementPicker.jsx'
 
 export default function JurnalMinggu() {
   const navigate = useNavigate()
+  const { week: weekParam } = useParams()
   const { couple, partner } = useCouple()
   const partnerName = partner?.display_name || 'pasanganmu'
-  const week = couple.current_week
+  // Minggu yang kelewat/belum sempat dijawab bisa diakses lagi belakangan
+  // lewat Riwayat, yang link ke sini pakai :week — kalau nggak ada
+  // (dibuka dari alur normal minggu ini), pakai minggu couple saat ini.
+  const week = weekParam ? Number(weekParam) : couple.current_week
   const question = getWeeklyQuestion(week)
+  const isHistoryView = week !== couple.current_week
+  const backTo = isHistoryView ? '/app/riwayat' : '/app/kotak-waktu'
 
   const [loading, setLoading] = useState(true)
   const [pair, setPair] = useState({ mine: null, partner: null })
   const [draft, setDraft] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [agreementStatus, setAgreementStatus] = useState(null)
+  const [editingStatus, setEditingStatus] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -59,6 +67,7 @@ export default function JurnalMinggu() {
   const hasSubmitted = Boolean(pair.mine)
   const partnerSubmitted = Boolean(pair.partner)
   const bothReady = hasSubmitted && partnerSubmitted
+  const showTextarea = agreementStatus === 'sepakat' && !editingStatus
 
   async function handleSubmit() {
     if (!draft.trim()) return
@@ -72,7 +81,7 @@ export default function JurnalMinggu() {
   return (
     <div className="flex flex-col gap-6">
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(backTo)}
         className="flex w-fit items-center gap-1.5 text-sm font-semibold text-ink-soft hover:text-ink"
       >
         <ArrowLeft size={16} /> Kembali
@@ -83,36 +92,52 @@ export default function JurnalMinggu() {
           Minggu ke-{week} · Jurnal privat
         </p>
         <h1 className="mt-1 text-xl font-extrabold leading-snug text-ink">{question.question}</h1>
+        <a
+          href={buildWhatsAppShareUrl(week, question.question)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-soft-blue-deep hover:underline"
+        >
+          <Share2 size={14} /> Share pertanyaan ke WhatsApp
+        </a>
       </div>
 
       {!hasSubmitted ? (
         <>
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="Jawab jujur dulu — jawaban pasanganmu tersembunyi sampai kalian berdua siap buka bareng."
-            rows={8}
-            className="w-full resize-none rounded-2xl bg-surface p-4 text-sm leading-relaxed text-ink shadow-sm shadow-ink/5 outline-none ring-soft-blue/40 placeholder:text-ink-soft/60 focus:ring-2"
-          />
-          <PillButton variant="blue" onClick={handleSubmit} disabled={!draft.trim() || submitting} className="w-full">
-            {submitting ? 'Menyimpan...' : 'Kirim jawabanku'}
-          </PillButton>
-
-          {agreementStatus === 'lewati-dulu' ? (
-            <div className="flex items-center justify-between gap-3 rounded-xl bg-surface p-3">
-              <p className="text-xs text-ink-soft">Minggu ini ditandai dilewati dulu. Tulis jawaban kapan aja buat lanjut lagi.</p>
-              <AgreementBadge status={agreementStatus} />
+          {showTextarea ? (
+            <div className="flex items-center justify-between gap-3">
+              <AgreementBadge status={agreementStatus} variant="before" />
+              <button
+                onClick={() => setEditingStatus(true)}
+                className="text-xs font-semibold text-ink-soft hover:text-ink"
+              >
+                Ubah
+              </button>
             </div>
           ) : (
-            <button
-              onClick={() => {
-                setAgreementStatus('lewati-dulu')
-                setTopicStatus(couple.id, 'kotak-waktu', week, 'lewati-dulu')
+            <AgreementPicker
+              status={agreementStatus}
+              variant="before-kotak-waktu"
+              onSelect={(status) => {
+                setEditingStatus(false)
+                setTopicStatus(couple.id, 'kotak-waktu', week, status)
               }}
-              className="text-center text-xs font-semibold text-ink-soft hover:text-ink"
-            >
-              Belum siap bahas minggu ini — lewati dulu
-            </button>
+            />
+          )}
+
+          {showTextarea && (
+            <>
+              <textarea
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                placeholder="Jawab jujur dulu — jawaban pasanganmu tersembunyi sampai kalian berdua siap buka bareng."
+                rows={8}
+                className="w-full resize-none rounded-2xl bg-surface p-4 text-sm leading-relaxed text-ink shadow-sm shadow-ink/5 outline-none ring-soft-blue/40 placeholder:text-ink-soft/60 focus:ring-2"
+              />
+              <PillButton variant="blue" onClick={handleSubmit} disabled={!draft.trim() || submitting} className="w-full">
+                {submitting ? 'Menyimpan...' : 'Kirim jawabanku'}
+              </PillButton>
+            </>
           )}
         </>
       ) : (
@@ -142,7 +167,7 @@ export default function JurnalMinggu() {
           {bothReady && (
             <PillButton
               variant="blue"
-              onClick={() => navigate('/app/kotak-waktu/buka-bareng')}
+              onClick={() => navigate(isHistoryView ? `/app/kotak-waktu/buka-bareng/${week}` : '/app/kotak-waktu/buka-bareng')}
               className="w-full"
             >
               <Sparkles size={18} /> Lanjut buka bareng

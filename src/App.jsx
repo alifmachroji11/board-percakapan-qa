@@ -52,6 +52,7 @@ export default function App() {
 
             <Route path="kotak-waktu" element={<PertanyaanMinggu />} />
             <Route path="kotak-waktu/jawab" element={<JurnalMinggu />} />
+            <Route path="kotak-waktu/jawab/:week" element={<JurnalMinggu />} />
             <Route path="kotak-waktu/buka-bareng" element={<BukaBarengMinggu />} />
             <Route path="kotak-waktu/buka-bareng/:week" element={<BukaBarengMinggu />} />
 
