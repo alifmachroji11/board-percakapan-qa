@@ -368,6 +368,38 @@ export const TOPICS = [
       },
     ],
   },
+  {
+    id: 'ekspektasi-ibadah',
+    category: 'Agama & ibadah',
+    phases: ['pra-nikah'],
+    title: 'Standar ibadah harian kita berdua nanti kayak apa, dan gimana kalau beda?',
+    questions: [
+      'Standar ibadah harian kita berdua nanti kayak apa, dan gimana kalau beda?',
+      'Kalau salah satu lagi futur/kendor ibadahnya, kita mau saling ingetin dengan cara kayak gimana?',
+      'Ada target belajar agama bareng (ngaji, kajian, dll) yang pengen kita mulai setelah nikah?',
+    ],
+    videoBlurb:
+      'Ngobrolin ekspektasi ibadah sehari-hari sebelum jadi asumsi yang ternyata beda begitu udah serumah.',
+    openerExample:
+      '"Kalau kita udah serumah nanti, kamu ngebayangin rutinitas ibadah kita kayak gimana — misalnya shalat berjamaah atau ngaji bareng?"',
+    videoUrl: 'https://www.youtube.com/watch?v=Ieo0PQ6BV8Y',
+    videoTitle: 'Ibadah dan Pernikahan',
+    videoChannel: 'Ustadz Firanda Andirdja, MA',
+    articles: [
+      {
+        perspective: 'agama',
+        url: 'https://rumaysho.com/2276-kewajiban-suami-3.html',
+        title: 'Kewajiban Suami (3)',
+        source: 'Rumaysho.com',
+      },
+      {
+        perspective: 'psikologi',
+        url: 'https://www.halodoc.com/artikel/pertanyaan-krusial-sebelum-menikah-dijamin-langgeng',
+        title: 'Pertanyaan Krusial Sebelum Menikah, Dijamin Langgeng',
+        source: 'Halodoc',
+      },
+    ],
+  },
 ]
 
 export function getTopicById(id) {
