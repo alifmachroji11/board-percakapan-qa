@@ -26,26 +26,19 @@ export default function PertanyaanMinggu() {
   const [pair, setPair] = useState({ mine: null, partner: null })
   const [missedWeeks, setMissedWeeks] = useState([])
 
+  // Satu langganan realtime aja buat couple ini — dua subscribeToCoupleJournal
+  // terpisah di komponen yang sama bentrok (nama channel-nya sama per
+  // couple, dan channel yang udah subscribe() nggak boleh nambah callback lagi).
   useEffect(() => {
     let cancelled = false
-    async function load() {
-      const result = await getEntryPair(couple.id, 'kotak-waktu', week)
-      if (cancelled) return
-      setPair(result)
-      setLoading(false)
-    }
-    load()
-    const unsubscribe = subscribeToCoupleJournal(couple.id, load)
-    return () => {
-      cancelled = true
-      unsubscribe()
-    }
-  }, [couple.id, week])
 
-  // Cari minggu-minggu sebelumnya yang belum kamu jawab, biar ada jalan
-  // buat balik lagi ke sana — bukan cuma nyangkut nunggu minggu berjalan.
-  useEffect(() => {
-    let cancelled = false
+    async function loadPair() {
+      const result = await getEntryPair(couple.id, 'kotak-waktu', week)
+      if (!cancelled) setPair(result)
+    }
+
+    // Cari minggu-minggu sebelumnya yang belum kamu jawab, biar ada jalan
+    // buat balik lagi ke sana — bukan cuma nyangkut nunggu minggu berjalan.
     async function loadMissed() {
       const {
         data: { user },
@@ -59,8 +52,14 @@ export default function PertanyaanMinggu() {
       })
       setMissedWeeks(missed)
     }
-    loadMissed()
-    const unsubscribe = subscribeToCoupleJournal(couple.id, loadMissed)
+
+    async function loadAll() {
+      await Promise.all([loadPair(), loadMissed()])
+      if (!cancelled) setLoading(false)
+    }
+
+    loadAll()
+    const unsubscribe = subscribeToCoupleJournal(couple.id, loadAll)
     return () => {
       cancelled = true
       unsubscribe()
