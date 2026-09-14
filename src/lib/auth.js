@@ -58,6 +58,17 @@ export async function signOut() {
   if (error) throw error
 }
 
+// Hapus akun beneran (bukan cuma logout) lewat Edge Function `delete-account`
+// yang jalan pakai service role — sisi klien nggak boleh punya akses buat
+// hapus baris auth.users sendiri. Kalau couple masih ada pasangan, jawaban
+// yang udah ditulis tetap kelihatan buat pasangan (author_id di-null-in di
+// server); kalau sendirian, seluruh data couple ikut kehapus.
+export async function deleteAccount() {
+  const { error } = await supabase.functions.invoke('delete-account')
+  if (error) throw error
+  await supabase.auth.signOut({ scope: 'local' })
+}
+
 export async function getMyCouple() {
   const {
     data: { user },

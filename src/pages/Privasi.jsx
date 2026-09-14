@@ -75,6 +75,19 @@ export default function Privasi() {
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-bold uppercase tracking-wide text-terracotta-deep">
+          Hapus akun & data
+        </h2>
+        <p className="text-sm leading-relaxed text-ink-soft">
+          Kamu bisa hapus akun sendiri kapan aja lewat menu Akun di aplikasi. Kalau kamu belum
+          tersambung ke pasangan, seluruh data couple-mu (jawaban jurnal, status kesepakatan) ikut
+          terhapus permanen. Kalau udah tersambung, akun & cara masukmu terhapus permanen, tapi
+          jawaban yang udah kamu tulis tetap tersimpan buat pasanganmu sebagai bagian dari riwayat
+          bersama — nama/identitasmu di jawaban itu ikut hilang begitu akunnya terhapus.
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-terracotta-deep">
           Bukan pengganti bantuan profesional
         </h2>
         <p className="text-sm leading-relaxed text-ink-soft">

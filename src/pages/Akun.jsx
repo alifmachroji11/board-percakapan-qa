@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShieldCheck, ShieldAlert, Mail, LogOut, Bell, BellOff } from 'lucide-react'
-import { isAnonymousUser, getUserEmail, linkGoogleAccount, signOut } from '../lib/auth.js'
+import { ShieldCheck, ShieldAlert, Mail, LogOut, Bell, BellOff, Trash2 } from 'lucide-react'
+import { isAnonymousUser, getUserEmail, linkGoogleAccount, signOut, deleteAccount } from '../lib/auth.js'
 import { pushSupported, getPushSubscriptionStatus, enablePushNotifications, disablePushNotifications } from '../lib/push.js'
 import { useCouple } from '../context/CoupleContext.jsx'
 import PillButton from '../components/PillButton.jsx'
@@ -16,6 +16,10 @@ export default function Akun() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [confirmingLogout, setConfirmingLogout] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [deleteText, setDeleteText] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
   const [pushStatus, setPushStatus] = useState('unsupported')
   const [pushBusy, setPushBusy] = useState(false)
   const [pushError, setPushError] = useState('')
@@ -77,6 +81,18 @@ export default function Akun() {
     } catch (err) {
       setError(err.message)
       setBusy(false)
+    }
+  }
+
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      await deleteAccount()
+      navigate('/', { replace: true })
+    } catch {
+      setDeleteError('Gagal menghapus akun, coba lagi sebentar.')
+      setDeleting(false)
     }
   }
 
@@ -209,6 +225,55 @@ export default function Akun() {
               <PillButton onClick={handleLogout} disabled={busy} className="flex-1">
                 {busy ? 'Keluar...' : 'Ya, tetap keluar'}
               </PillButton>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-3 rounded-2xl border border-terracotta/20 bg-terracotta/5 p-5">
+        {!confirmingDelete ? (
+          <button
+            onClick={() => setConfirmingDelete(true)}
+            className="flex items-center justify-center gap-2 rounded-full border border-terracotta/30 px-6 py-3 text-sm font-semibold text-terracotta-deep transition-colors hover:bg-terracotta/10"
+          >
+            <Trash2 size={16} /> Hapus akun saya
+          </button>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <p className="text-center text-sm font-bold text-terracotta-deep">
+              Ini nggak bisa dibatalin.
+            </p>
+            <p className="text-center text-sm leading-relaxed text-ink-soft">
+              {partner
+                ? 'Akun & cara masuk kamu kehapus permanen. Jawaban jurnal yang udah kamu tulis tetap kelihatan buat pasanganmu, tapi kamu sendiri kehilangan akses selamanya.'
+                : 'Akun kamu belum tersambung ke pasangan, jadi seluruh data couple ini (jawaban jurnal, status kesepakatan) ikut kehapus permanen bareng akunnya.'}
+            </p>
+            {deleteError && <p className="text-center text-sm text-terracotta-deep">{deleteError}</p>}
+            <input
+              value={deleteText}
+              onChange={(e) => setDeleteText(e.target.value)}
+              placeholder='Ketik "HAPUS" buat konfirmasi'
+              className="w-full rounded-2xl bg-surface p-4 text-center text-sm text-ink shadow-sm shadow-ink/5 outline-none ring-terracotta/30 placeholder:text-ink-soft/60 focus:ring-2"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setConfirmingDelete(false)
+                  setDeleteText('')
+                  setDeleteError('')
+                }}
+                disabled={deleting}
+                className="flex-1 rounded-full border border-cream-deep px-6 py-3 text-sm font-semibold text-ink-soft hover:border-terracotta/40"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting || deleteText.trim().toUpperCase() !== 'HAPUS'}
+                className="flex-1 rounded-full bg-terracotta-deep px-6 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
+              >
+                {deleting ? 'Menghapus...' : 'Ya, hapus akun'}
+              </button>
             </div>
           </div>
         )}
