@@ -14,11 +14,11 @@ export async function getCoupleMembers(coupleId) {
 
 // Ambil SEMUA entri jurnal satu couple sekaligus — dipakai halaman
 // yang butuh status banyak topik/minggu sekaligus (pilih fase, riwayat).
+// Lewat RPC get_journal_entries, bukan select langsung ke tabel — jawaban
+// tersimpan terenkripsi (lihat migration encrypt_journal_answers), didekrip
+// di server pakai kunci yang cuma dipegang Vault, nggak pernah dikirim ke klien.
 export async function getAllEntries(coupleId) {
-  const { data, error } = await supabase
-    .from('journal_entries')
-    .select('type, ref_id, author_id, answer, submitted_at, opened_at')
-    .eq('couple_id', coupleId)
+  const { data, error } = await supabase.rpc('get_journal_entries', { p_couple_id: coupleId })
   if (error) throw error
   return data
 }
@@ -45,35 +45,24 @@ export async function getEntryPair(coupleId, type, refId) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { data, error } = await supabase
-    .from('journal_entries')
-    .select('author_id, answer, submitted_at, opened_at')
-    .eq('couple_id', coupleId)
-    .eq('type', type)
-    .eq('ref_id', String(refId))
-  if (error) throw error
+  const entries = await getAllEntries(coupleId)
+  const data = entries.filter((r) => r.type === type && r.ref_id === String(refId))
 
   const mine = data.find((r) => r.author_id === user.id) ?? null
   const partner = data.find((r) => r.author_id !== user.id) ?? null
   return { mine, partner }
 }
 
+// Jawaban dienkripsi di server (di dalam RPC-nya) sebelum disimpan — lihat
+// migration encrypt_journal_answers. Akses insert langsung ke tabel udah
+// ditutup, jadi ini satu-satunya jalan buat nulis jawaban.
 export async function submitAnswer(coupleId, type, refId, answer) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const { error } = await supabase.from('journal_entries').upsert(
-    {
-      couple_id: coupleId,
-      type,
-      ref_id: String(refId),
-      author_id: user.id,
-      answer,
-      submitted_at: new Date().toISOString(),
-    },
-    { onConflict: 'couple_id,type,ref_id,author_id' }
-  )
+  const { error } = await supabase.rpc('submit_journal_answer', {
+    p_couple_id: coupleId,
+    p_type: type,
+    p_ref_id: String(refId),
+    p_answer: answer,
+  })
   if (error) throw error
 }
 

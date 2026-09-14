@@ -49,6 +49,11 @@ export default function Privasi() {
           dikunci di level database supaya nggak ada yang bisa diam-diam nulis ulang jawaban orang
           lain.
         </p>
+        <p className="text-sm leading-relaxed text-ink-soft">
+          Jawaban jurnal juga dienkripsi di server sebelum disimpan — bukan tersimpan sebagai teks
+          biasa di database. Ini lapisan tambahan di luar kontrol akses tadi, buat jaga-jaga kalau
+          ada kebocoran data mentah dari server.
+        </p>
       </section>
 
       <section className="flex flex-col gap-2">
